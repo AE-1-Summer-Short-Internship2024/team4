@@ -7,6 +7,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+import UserRegist from './compoents/main/UserRegist';
 
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
         <Routes>
           {/* path：/home　でProductコンポネントに飛ばす。 */}
           <Route path="/home" element={<Product />} />
-
+          <Route path="/userregist" element={<UserRegist />} />
   
         </Routes>
       </div>
