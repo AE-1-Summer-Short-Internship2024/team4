@@ -14,7 +14,6 @@ function App() {
   return (
     <div>
       <Header />
-      <h1>災害備蓄アプリ</h1>
 
     {/* ルーティングの設定 */}
       <Router>  

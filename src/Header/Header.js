@@ -1,19 +1,30 @@
 // src/Header.js
 import React from 'react';
-import './Header.css';  // スタイリング用のCSSファイル（必要に応じて）
+import { BrowserRouter as Router, Route, Link, Routes, NavLink } from 'react-router-dom';
+import './Header.css'; 
 
 const Header = () => {
   return (
-    <header className="header">
-      <h1>アプリ名</h1>
-      <nav>
-        <ul>
-          <li><a href="#home">ホーム</a></li>
-          <li><a href="/about">在庫リスト</a></li>
-          <li><a href="/user">ユーザ情報</a></li>
-        </ul>
-      </nav>
-    </header>
+    <Router>
+        <header className="header">
+          <h1>備蓄くん</h1>
+        </header>
+        <div className="nav-container">
+          <nav className="nav">
+            <ul>
+            <li>
+                <NavLink exact to="/" activeClassName="active">　ホーム　</NavLink> { }
+              </li>
+              <li>
+                <NavLink to="/inventory" activeClassName="active">在庫リスト</NavLink> { }
+              </li>
+              <li>
+                <NavLink to="/userinfo" activeClassName="active">ユーザ情報</NavLink> { }
+              </li>
+            </ul>
+          </nav>
+        </div>
+    </Router>
   );
 };
 
