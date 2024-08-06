@@ -1,0 +1,40 @@
+.App {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+}
+
+.household-size-selector {
+    margin: 20px 0;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+button {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    background-color: white;
+    cursor: pointer;
+}
+
+button.selected {
+    background-color: yellow;
+}
+
+.household-form {
+    margin: 20px 0;
+}
+
+.member {
+    margin: 10px 0;
+}
+
+label {
+    margin-right: 10px;
+}
