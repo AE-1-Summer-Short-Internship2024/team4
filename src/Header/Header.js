@@ -13,13 +13,13 @@ const Header = () => {
           <nav className="nav">
             <ul>
             <li>
-                <NavLink exact to="/" activeClassName="active">　ホーム　</NavLink> { }
+                <NavLink to="/" aria-current="false">　ホーム　</NavLink> { }
               </li>
               <li>
-                <NavLink to="/inventory" activeClassName="active">在庫リスト</NavLink> { }
+                <NavLink to="/inventory" aria-current="false">在庫リスト</NavLink> { }
               </li>
               <li>
-                <NavLink to="/userinfo" activeClassName="active">ユーザ情報</NavLink> { }
+                <NavLink to="/userinfo" aria-current="false">ユーザ情報</NavLink> { }
               </li>
             </ul>
           </nav>

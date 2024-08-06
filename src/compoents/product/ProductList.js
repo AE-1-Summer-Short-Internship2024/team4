@@ -34,6 +34,8 @@ const ProductList = () => {
 
   // 各カテゴリの詳細リストを表示する関数
   const renderProductDetails = (productList) => {
+    
+ console.log("rendering in child B component");
     return productList.map((product) => (
       <div id={`product-${product.id}`} key={product.id} className={`product-detail ${selectedProducts[product.id] ? 'selected' : ''}`}>
         <input

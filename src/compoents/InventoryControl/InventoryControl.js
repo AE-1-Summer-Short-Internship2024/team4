@@ -48,7 +48,7 @@ const rows = [
 
 export default function DataGridDemo() {
   return (
-    /*<Box sx={{ height: 400, width: '100%' }}>
+    <Box sx={{ height: 400, width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -63,9 +63,6 @@ export default function DataGridDemo() {
         checkboxSelection
         disableRowSelectionOnClick
       />
-    </Box>*/
-    <div style={{ width: '100%', height: 300 }}>
-    <DataGrid columns={columns} rows={rows} />
-  </div>
+    </Box>
   );
 }
