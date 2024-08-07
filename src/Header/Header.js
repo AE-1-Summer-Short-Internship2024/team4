@@ -1,31 +1,55 @@
 // src/Header.js
-import React from 'react';
-import { BrowserRouter as Router, Route, Link, Routes, NavLink } from 'react-router-dom';
-import './Header.css'; 
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import './Header.css';
 
+// Headerコンポーネントを定義
 const Header = () => {
+  const location = useLocation(); // 現在のURLパスを取得
+  // 現在のパスと一致する場合にactiveクラスを返す関数
+  const getActiveClass = (path) => location.pathname === path ? 'active' : '';
+
+  return (
+    <>
+      <header className="header">
+        <h1>備蓄くん</h1>
+      </header>
+      <div className="nav-container">
+        <nav className="nav">
+          <ul>
+            <li>
+              <a href="/" className={getActiveClass('/')}>　ホーム　</a>
+            </li>
+            <li>
+              <a href="/inventory" className={getActiveClass('/inventory')}>在庫リスト</a>
+            </li>
+            <li>
+              <a href="/about" className={getActiveClass('/productList')}>ユーザ情報</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </>
+  );
+};
+
+// Appコンポーネントを定義し、ルーティングを設定
+const App = () => {
   return (
     <Router>
-        <header className="header">
-          <h1>備蓄くん</h1>
-        </header>
-        <div className="nav-container">
-          <nav className="nav">
-            <ul>
-            <li>
-                <NavLink to="/" aria-current="false">　ホーム　</NavLink> { }
-              </li>
-              <li>
-                <NavLink to="/inventory" aria-current="false">在庫リスト</NavLink> { }
-              </li>
-              <li>
-                <NavLink to="/userinfo" aria-current="false">ユーザ情報</NavLink> { }
-              </li>
-            </ul>
-          </nav>
-        </div>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/inventory" element={<Inventory />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
     </Router>
   );
 };
 
-export default Header;
+// 各ページコンポーネントを定義
+const Home = () => <div></div>;
+const Inventory = () => <div></div>;
+const About = () => <div></div>;
+
+export default App;
