@@ -5,6 +5,7 @@ import ProductList from './compoents/product/RenderProductList';
 import Login_app from './compoents/Login/Login_app';
 import AddHouseholdData from './compoents/DB/addUserInfo';
 import DisplayHouseholdData from './compoents/product/DisplayHouseHoldData';
+import UserInfo from './compoents/user_info/UserInfo';
 import {
   BrowserRouter as Router,
   Routes,
@@ -32,7 +33,7 @@ function App() {
           <Route path="/Login" element={<Login_app />} />
           <Route path="/add" element={< AddHouseholdData/>} />
           <Route path="/userregist" element={<UserRegist />} />
-    
+          <Route path="/user" element={< UserInfo/>} />
 
         </Routes>
       </div>
