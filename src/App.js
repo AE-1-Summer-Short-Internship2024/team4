@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Header from './Header/Header';
 import Product from './compoents/main/Product';
 import Login_app from './compoents/Login/Login_app';
-import AddHouseholdData from './compoents/test/DB_test';
+import AddHouseholdData from './compoents/DB/addUserInfo';
 import {
   BrowserRouter as Router,
   Routes,
