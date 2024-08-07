@@ -2,9 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import Header from './Header/Header';
 import Product from './compoents/main/Product';
-import AuthComponent from './compoents/Login/components/AuthComponent';
 import Login_app from './compoents/Login/Login_app';
- 
+import AddHouseholdData from './compoents/test/DB_test';
 import {
   BrowserRouter as Router,
   Routes,
@@ -26,7 +25,7 @@ function App() {
           {/* path：/home　でProductコンポネントに飛ばす。 */}
           <Route path="/home" element={<Product />} />
           <Route path="/Login" element={<Login_app />} />
-
+          <Route path="/add" element={< AddHouseholdData/>} />
         </Routes>
       </div>
     </Router>
