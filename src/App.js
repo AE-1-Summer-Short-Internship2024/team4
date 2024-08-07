@@ -9,6 +9,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Navigate
 } from "react-router-dom";
 import UserRegist from './compoents/main/UserRegist';
 
@@ -25,6 +26,7 @@ function App() {
       <div className="app-content">
         <Routes>
           {/* path：/home　でProductコンポネントに飛ばす。 */}
+          <Route path="/" element={<Navigate to="/Login" />} />
           <Route path="/home" element={<ProductList />} />
           <Route path="/Login" element={<Login_app />} />
           <Route path="/add" element={< AddHouseholdData/>} />
