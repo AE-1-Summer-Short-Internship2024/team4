@@ -10,7 +10,6 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import UserRegist from './compoents/main/UserRegist';
 
 
 function App() {
@@ -27,9 +26,7 @@ function App() {
           {/* path：/home　でProductコンポネントに飛ばす。 */}
           <Route path="/home" element={<ProductList />} />
           <Route path="/Login" element={<Login_app />} />
-          <Route path="/add" element={< AddHouseholdData/>} />
-          <Route path="/userregist" element={<UserRegist />} />
-
+          <Route path="/add" element={<AddHouseholdData/>} />
 
         </Routes>
       </div>
