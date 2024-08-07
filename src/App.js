@@ -5,6 +5,7 @@ import ProductList from './compoents/product/ProductList';
 import Login_app from './compoents/Login/Login_app';
 import AddHouseholdData from './compoents/DB/addUserInfo';
 import AddData from './compoents/DB_add_test';
+import DisplayHouseholdData from './compoents/product/DisplayHouseHoldData';
 
 import {
   BrowserRouter as Router,
@@ -33,6 +34,7 @@ function App() {
           <Route path="/add" element={< AddHouseholdData/>} />
           <Route path="/userregist" element={<UserRegist />} />
           <Route path="/AddData" element={<AddData />} />
+          <Route path="/family" element={<DisplayHouseholdData />} />
 
 
 
