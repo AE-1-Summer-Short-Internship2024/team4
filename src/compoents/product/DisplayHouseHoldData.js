@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db, auth } from '../../firebase';
 import { onAuthStateChanged } from "firebase/auth";
 import { calculateNeeds } from './utils/calculateNeeds';
@@ -10,7 +10,7 @@ const DisplayHouseholdData = () => {
   const [householdData, setHouseholdData] = useState(null);
   const [error, setError] = useState('');
   const [neededProducts, setNeededProducts] = useState(null);
-  //ユーザを認証して、ユーザIDを取得する
+　//ユーザを認証する
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -22,7 +22,31 @@ const DisplayHouseholdData = () => {
 
     return () => unsubscribe();
   }, []);
-  //ユーザ情報の更新があったら、該当する家族の情報を取得する
+  //必要な商品情報をDBに保存する関数
+  const saveProductsToDB = async (userId, products) => {
+    try {
+      await setDoc(doc(db, `userProductData/${userId}`), { products });
+      console.log("Products successfully written!");
+    } catch (error) {
+      console.error("Error writing document: ", error);
+    }
+  };
+  //DBから商品情報を取得する関数
+  const fetchProductsFromDB = async (userId) => {
+    try {
+      const docRef = doc(db, `userProductData/${userId}`);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data().products;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching products: ", error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     const fetchHouseholdData = async () => {
       if (userId) {
@@ -32,7 +56,17 @@ const DisplayHouseholdData = () => {
           if (docSnap.exists()) {
             const data = docSnap.data().household;
             setHouseholdData(data);
-            setNeededProducts(calculateNeeds(Object.values(data)));
+
+            // DBからproductsを取得
+            const storedProducts = await fetchProductsFromDB(userId);
+            if (storedProducts) {
+              setNeededProducts(storedProducts);
+            } else {
+              // DBにproductsがない場合は計算して保存
+              const products = calculateNeeds(Object.values(data));
+              setNeededProducts(products);
+              saveProductsToDB(userId, products);
+            }
           } else {
             setError('No household data found');
           }
@@ -53,26 +87,24 @@ const DisplayHouseholdData = () => {
   return (
     <div>
       <h1>家族情報</h1>
-      {/* 家族の情報を、表示 */}
       {householdData ? (
         <div>
           {Object.keys(householdData).map((key) => (
             <div key={key}>
               <h3>{key}</h3>
-              <p>Age Category: {householdData[key].ageCategory}</p>
-              <p>Gender: {householdData[key].gender}</p>
+              <p>世代: {householdData[key].ageCategory}</p>
+              <p>性別: {householdData[key].gender}</p>
             </div>
           ))}
         </div>
       ) : (
-        <p>Loading...</p>
+        <p>ロード中...</p>
       )}
-　　　　{/* 必要な商品を取得したら、ProductListに渡して表示 */}
-      <h2>必要な商品リスト</h2>
+      <h2>必要な備蓄リスト</h2>
       {neededProducts ? (
-        <ProductList products={neededProducts} />
+        <ProductList products={neededProducts} userId={userId} />
       ) : (
-        <p>Calculating...</p>
+        <p>ロード中...</p>
       )}
     </div>
   );

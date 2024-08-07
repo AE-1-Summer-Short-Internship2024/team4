@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { signInWithPopup, signOut } from "firebase/auth";
-import { auth, googleProvider } from "../../Login/firebase";
+import { auth, googleProvider } from "../../../firebase";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
 const db = getFirestore();
