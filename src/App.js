@@ -1,9 +1,9 @@
 // frontend/src/App.js
 import React, { useEffect, useState } from 'react';
 import Header from './Header/Header';
-import Product from './compoents/main/Product';
-import AuthComponent from './compoents/Login/components/AuthComponent';
+import ProductList from './compoents/product/ProductList';
 import Login_app from './compoents/Login/Login_app';
+import AddHouseholdData from './compoents/DB/addUserInfo';
 import AddData from './compoents/DB_add_test';
 
 import {
@@ -12,6 +12,7 @@ import {
   Route,
   Navigate
 } from "react-router-dom";
+import UserRegist from './compoents/main/UserRegist';
 
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
   return (
     <div>
       <Header />
-      <h1>災害備蓄アプリ</h1>
+      
 
     {/* ルーティングの設定 */}
       <Router>  
@@ -27,9 +28,13 @@ function App() {
         <Routes>
           {/* path：/home　でProductコンポネントに飛ばす。 */}
           <Route path="/" element={<Navigate to="/Login" />} />
-          <Route path="/home" element={<Product />} />
+          <Route path="/home" element={<ProductList />} />
           <Route path="/Login" element={<Login_app />} />
+          <Route path="/add" element={< AddHouseholdData/>} />
+          <Route path="/userregist" element={<UserRegist />} />
           <Route path="/AddData" element={<AddData />} />
+
+
 
         </Routes>
       </div>
