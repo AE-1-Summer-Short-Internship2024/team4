@@ -24,7 +24,7 @@ const ProductList = () => {
             key={product.id}
           >
             <a href={`#product-${product.id}`}>
-              <div>{product.name}：{product.quantity}</div>
+              <div>{product.name};{product.quantity}</div>
             </a>
           </div>
         ))}

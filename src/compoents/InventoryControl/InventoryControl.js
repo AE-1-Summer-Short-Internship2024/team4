@@ -1,68 +1,99 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-import { BrowserRouter as Router, Route, Link, Routes, NavLink } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
+// カラム定義を更新しました
 const columns = [
-  { field: 'id', headerName: 'ID', width: 90 },
-  {
-    field: 'firstName',
-    headerName: 'First name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'lastName',
-    headerName: 'Last name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 110,
-    editable: true,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-  },
+  { field: 'id', headerName: '商品名', flex: 1 },
+  { field: 'stock', headerName: '在庫数', flex: 1, editable: true },
+  { field: 'expiryDate', headerName: '賞味期限', flex: 1, editable: true },
 ];
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+// 初期データ
+const initialRows = [
+  { id: '水2L', stock: 10, expiryDate: '2024-12-01' },
+  { id: '缶詰', stock: 15, expiryDate: '2025-06-15' },
+  { id: 'インスタントラーメン', stock: 20, expiryDate: '2023-11-10' },
+  { id: '乾燥野菜', stock: 5, expiryDate: '2023-09-05' },
+  { id: '非常食ビスケット', stock: 30, expiryDate: '2024-03-20' },
+  { id: 'ミネラルウォーター500ml', stock: 50, expiryDate: '2023-12-31' },
+  { id: 'アルファ米', stock: 25, expiryDate: '2024-05-10' },
+  { id: 'カロリーメイト', stock: 40, expiryDate: '2023-10-15' },
+  { id: '栄養ドリンク', stock: 35, expiryDate: '2023-08-20' },
 ];
 
 export default function DataGridDemo() {
+  const [rows, setRows] = useState(initialRows);
+  const [selectionModel, setSelectionModel] = useState([]);
+
+  const handleDelete = () => {
+    // 選択された行をフィルタリングして削除
+    const newRows = rows.filter((row) => !selectionModel.includes(row.id));
+    setRows(newRows);
+    setSelectionModel([]);
+  };
+
+  const handleAdd = () => {
+    if (newItem.id && newItem.stock && newItem.expiryDate) {
+      setRows([...rows, { ...newItem, id: newItem.id }]);
+      setNewItem({ id: '', stock: '', expiryDate: '' });
+    }
+  };
+
+  const [newItem, setNewItem] = useState({ id: '', stock: '', expiryDate: '' });
+
   return (
-    <Box sx={{ height: 400, width: '100%' }}>
+    <Box sx={{ height: 600, width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
         initialState={{
+          sorting: {
+            sortModel: [{ field: 'expiryDate', sort: 'asc' }],
+          },
           pagination: {
             paginationModel: {
-              pageSize: 5,
+              pageSize: 50,
             },
           },
         }}
-        pageSizeOptions={[5]}
+        pageSizeOptions={[50]}
         checkboxSelection
         disableRowSelectionOnClick
+        onSelectionModelChange={(newSelection) => {
+          setSelectionModel(newSelection);
+        }}
       />
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <TextField
+            label="商品名"
+            value={newItem.id}
+            onChange={(e) => setNewItem({ ...newItem, id: e.target.value })}
+          />
+          <TextField
+            label="在庫数"
+            value={newItem.stock}
+            onChange={(e) => setNewItem({ ...newItem, stock: e.target.value })}
+            type="number"
+          />
+          <TextField
+            label="賞味期限"
+            value={newItem.expiryDate}
+            onChange={(e) => setNewItem({ ...newItem, expiryDate: e.target.value })}
+            type="date"
+            InputLabelProps={{ shrink: true }}
+          />
+        </Box>
+        <Button variant="contained" color="primary" onClick={handleAdd}>
+          追加
+        </Button>
+        <Button variant="contained" color="secondary" onClick={handleDelete}>
+          削除
+        </Button>
+      </Box>
     </Box>
   );
 }

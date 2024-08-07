@@ -18,13 +18,13 @@ const Header = () => {
         <nav className="nav">
           <ul>
             <li>
-              <a href="/" className={getActiveClass('/')}>　ホーム　</a>
+              <a href="/home" className={getActiveClass('/home')}>　ホーム　</a>
             </li>
             <li>
               <a href="/inventory" className={getActiveClass('/inventory')}>在庫リスト</a>
             </li>
             <li>
-              <a href="/about" className={getActiveClass('/productList')}>ユーザ情報</a>
+              <a href="/userregist" className={getActiveClass('/userregist')}>ユーザ情報</a>
             </li>
           </ul>
         </nav>
@@ -39,9 +39,9 @@ const App = () => {
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/inventory" element={<Inventory />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/userregist" element={<Userregist />} />
       </Routes>
     </Router>
   );
@@ -50,6 +50,6 @@ const App = () => {
 // 各ページコンポーネントを定義
 const Home = () => <div></div>;
 const Inventory = () => <div></div>;
-const About = () => <div></div>;
+const Userregist = () => <div></div>;
 
 export default App;

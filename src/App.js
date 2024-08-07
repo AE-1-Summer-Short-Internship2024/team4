@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import Header from './Header/Header';
 import Product from './compoents/product/ProductList';
+import Login_app from './compoents/Login/Login_app';
 import InventoryControl from './compoents/InventoryControl/InventoryControl';
+import UserRegist from './compoents/main/UserRegist';
 import {
   BrowserRouter as Router,
   Routes,
@@ -23,6 +25,8 @@ function App() {
           {/* path：/home　でProductコンポネントに飛ばす。 */}
           <Route path="/home" element={<Product />} /> 
           <Route path="/inventory"  element={<InventoryControl />} />
+          <Route path="/Login" element={<Login_app />} />
+          <Route path="/userregist" element={<UserRegist />} />
         </Routes>
 
       </div>
