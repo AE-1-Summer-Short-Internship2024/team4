@@ -66,6 +66,7 @@ body {
   
   .nav ul li a:hover {
     background-color: #ffffff;
+    color: #000000;
   }
   
   .nav ul li a.active {

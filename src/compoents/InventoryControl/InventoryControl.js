@@ -3,15 +3,14 @@ import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
-// カラム定義を更新しました
 const columns = [
   { field: 'id', headerName: '商品名', flex: 1 },
   { field: 'stock', headerName: '在庫数', flex: 1, editable: true },
   { field: 'expiryDate', headerName: '賞味期限', flex: 1, editable: true },
 ];
 
-// 初期データ
 const initialRows = [
   { id: '水2L', stock: 10, expiryDate: '2024-12-01' },
   { id: '缶詰', stock: 15, expiryDate: '2025-06-15' },
@@ -27,9 +26,10 @@ const initialRows = [
 export default function DataGridDemo() {
   const [rows, setRows] = useState(initialRows);
   const [selectionModel, setSelectionModel] = useState([]);
+  const [newItem, setNewItem] = useState({ id: '', stock: '', expiryDate: '' });
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleDelete = () => {
-    // 選択された行をフィルタリングして削除
     const newRows = rows.filter((row) => !selectionModel.includes(row.id));
     setRows(newRows);
     setSelectionModel([]);
@@ -37,12 +37,17 @@ export default function DataGridDemo() {
 
   const handleAdd = () => {
     if (newItem.id && newItem.stock && newItem.expiryDate) {
-      setRows([...rows, { ...newItem, id: newItem.id }]);
+      setRows([...rows, { id: newItem.id, stock: newItem.stock, expiryDate: newItem.expiryDate }]);
       setNewItem({ id: '', stock: '', expiryDate: '' });
+      setErrorMessage('');
+    } else {
+      setErrorMessage('データを全て入力してください');
     }
   };
 
-  const [newItem, setNewItem] = useState({ id: '', stock: '', expiryDate: '' });
+  const getSelectedItems = () => {
+    return rows.filter((row) => selectionModel.includes(row.id)).map((row) => row.id);
+  };
 
   return (
     <Box sx={{ height: 600, width: '100%' }}>
@@ -62,12 +67,12 @@ export default function DataGridDemo() {
         pageSizeOptions={[50]}
         checkboxSelection
         disableRowSelectionOnClick
-        onSelectionModelChange={(newSelection) => {
-          setSelectionModel(newSelection);
+        onSelectionModelChange={(newSelectionModel) => {
+          setSelectionModel(newSelectionModel.map((id) => String(id))); 
         }}
       />
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-        <Box sx={{ display: 'flex', gap: 1 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 2 }}>
+        <Box sx={{ display: 'flex', gap: 1, marginBottom: 2 }}>
           <TextField
             label="商品名"
             value={newItem.id}
@@ -87,12 +92,19 @@ export default function DataGridDemo() {
             InputLabelProps={{ shrink: true }}
           />
         </Box>
-        <Button variant="contained" color="primary" onClick={handleAdd}>
-          追加
-        </Button>
-        <Button variant="contained" color="secondary" onClick={handleDelete}>
-          削除
-        </Button>
+        {errorMessage && (
+          <Typography color="error" variant="body2" sx={{ marginBottom: 2 }}>
+            {errorMessage}
+          </Typography>
+        )}
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Button variant="contained" color="primary" onClick={handleAdd}>
+            追加
+          </Button>
+          <Button variant="contained" color="secondary" onClick={handleDelete}>
+            削除
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
