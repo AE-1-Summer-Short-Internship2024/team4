@@ -25,13 +25,14 @@ function App() {
       <Router>  
       <div className="app-content">
         <Routes>
-          {/* path：/home　でProductコンポネントに飛ばす。 */}
+          {/* path：/home　でDisplayHouseholdDataコンポネントに飛ばす。 */}
+
+          <Route path="/home" element={<DisplayHouseholdData/>} />
           <Route path="/" element={<Navigate to="/Login" />} />
-          <Route path="/home" element={<ProductList />} />
           <Route path="/Login" element={<Login_app />} />
           <Route path="/add" element={< AddHouseholdData/>} />
           <Route path="/userregist" element={<UserRegist />} />
-          <Route path="/family" element={<DisplayHouseholdData />} />
+    
 
         </Routes>
       </div>
