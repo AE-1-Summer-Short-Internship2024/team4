@@ -73,7 +73,7 @@ const AddHouseholdData = () => {
         return acc;
       }, {});
 
-      await setDoc(doc(db, "users", userId), { household: householdObject });
+      await setDoc(doc(db, "usersFamData", userId), { household: householdObject });
 
       alert('Household data added successfully');
       setHouseholdCount(0);
