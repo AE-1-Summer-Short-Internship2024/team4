@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import products from './data.js';
-import './ProductList.css';
+// src/components/ProductList.js
 
-const ProductList = () => {
+import React, { useState } from 'react';
+import './RenderProductList.css';
+
+const ProductList = ({ products }) => {
   // 各商品の選択状態を管理するためのstateを追加
   const [selectedProducts, setSelectedProducts] = useState({});
 
@@ -50,16 +51,20 @@ const ProductList = () => {
     ));
   };
 
+  if (!products) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="product-list">
       <h1>食品等</h1>
-      {renderProductGrid(products.food)}
+      {products.food && renderProductGrid(products.food)}
 
       <h1>衛生用品</h1>
-      {renderProductGrid(products.hygiene)}
+      {products.hygiene && renderProductGrid(products.hygiene)}
 
       <h1>生活用品</h1>
-      {renderProductGrid(products.daily)}
+      {products.daily && renderProductGrid(products.daily)}
 
       <div className="product-details">
         {Object.keys(products).map((category) =>

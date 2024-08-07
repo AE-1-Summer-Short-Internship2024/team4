@@ -1,10 +1,10 @@
 // frontend/src/App.js
 import React, { useEffect, useState } from 'react';
 import Header from './Header/Header';
-import ProductList from './compoents/product/ProductList';
+import ProductList from './compoents/product/RenderProductList';
 import Login_app from './compoents/Login/Login_app';
 import AddHouseholdData from './compoents/DB/addUserInfo';
-
+import DisplayHouseholdData from './compoents/product/DisplayHouseHoldData';
 import {
   BrowserRouter as Router,
   Routes,
@@ -29,7 +29,7 @@ function App() {
           <Route path="/Login" element={<Login_app />} />
           <Route path="/add" element={< AddHouseholdData/>} />
           <Route path="/userregist" element={<UserRegist />} />
-
+          <Route path="/family" element={<DisplayHouseholdData />} />
 
         </Routes>
       </div>
