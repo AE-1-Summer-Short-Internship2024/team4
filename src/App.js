@@ -1,10 +1,9 @@
 // frontend/src/App.js
 import React, { useEffect, useState } from 'react';
 import Header from './Header/Header';
-import ProductList from './compoents/product/ProductList';
-import AuthComponent from './compoents/Login/components/AuthComponent';
+import Product from './compoents/main/Product';
 import Login_app from './compoents/Login/Login_app';
- 
+import AddHouseholdData from './compoents/DB/addUserInfo';
 
 import {
   BrowserRouter as Router,
@@ -28,7 +27,9 @@ function App() {
           {/* path：/home　でProductコンポネントに飛ばす。 */}
           <Route path="/home" element={<ProductList />} />
           <Route path="/Login" element={<Login_app />} />
+          <Route path="/add" element={< AddHouseholdData/>} />
           <Route path="/userregist" element={<UserRegist />} />
+
 
         </Routes>
       </div>
