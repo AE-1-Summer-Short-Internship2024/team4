@@ -93,10 +93,10 @@ const UserInfo = () => {
   }
 
   return (
-    <div>
-      
+    <div className="family-info-container">
+      <h1>Family Information</h1>
       {householdData ? (
-        <div>
+        <div className="family-info">
           {Object.keys(householdData).map((key, index) => {
             const member = householdData[key];
             const ageCategory = member.ageCategory;
