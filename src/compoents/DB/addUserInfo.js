@@ -8,6 +8,14 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Button from '@mui/material/Button';
+import SendIcon from '@mui/icons-material/Send';
+import {useNavigate} from 'react-router-dom';
+import Slider from '@mui/material/Slider';
 
 //家族の情報を入力してDBに格納するコンポーネント
 const AddHouseholdData = () => {
@@ -15,6 +23,7 @@ const AddHouseholdData = () => {
   const [householdCount, setHouseholdCount] = useState(0);
   const [householdData, setHouseholdData] = useState([]);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -83,6 +92,7 @@ const AddHouseholdData = () => {
       alert('Household data added successfully');
       setHouseholdCount(0);
       setHouseholdData([]);
+      navigate('/home');  // ナビゲートする
     } catch (error) {
       console.error("Error adding document: ", error);
     }
@@ -94,53 +104,66 @@ const AddHouseholdData = () => {
       <h2>あなたと、一緒に住んでいる家族の情報を入力してください。</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <div className='householdcount'>
-        <label>家族の人数を入力
-          <input
-            type="number"
-            value={householdCount}
+      家族の人数をスライドで入力
+        <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: 300, margin: '0 auto'}}>
+          <Slider
+            aria-label='household-count'
+            defaultValue={1}
+            getAriaValueText={setHouseholdCount}
+            valueLabelDisplay='auto'
+            step={1}
+            marks
+            min={1}
+            max={10}
             onChange={handleHouseholdCountChange}
-            placeholder="Number of household members"
           />
-        </label>
+        </Box>
       </div>
 
       {householdData.map((_, index) => (
         <div key={index}>
           <h3>{index + 1}人目の世代・性別</h3>
           <div>
-            <label>
-              世代:
-              <select
-                value={householdData[index]?.ageCategory || ''}
-                onChange={(e) => handleHouseholdDataChange(index, 'ageCategory', e.target.value)}
-              >
-                <option value="">世代の選択</option>
-                <option value="Infant">乳幼児 0~2歳</option>
-                <option value="Child">子供 3歳~小6</option>
-                <option value="Teen">子供 中学生以上</option>
-                <option value="Adult">成人 18歳以上</option>
-                <option value="Senior">高齢者 65歳以上</option>
-              </select>
-            </label>
+            <Box sx={{minWidth: 120, mb:2}}>
+              <FormControl fullWidth sx={{maxWidth:300}}>
+                <InputLabel id="age-select-label">世代</InputLabel>
+                <Select
+                  labelId={"age-select-label"}
+                  id="age-select"
+                  name={`ageCategory-${index}`}
+                  value={householdData[index].ageCategory}
+                  label="世代"
+                  onChange={(e) => handleHouseholdDataChange(index, 'ageCategory', e.target.value)}
+                >
+                  <MenuItem value={"Infant"}>乳幼児 0~2歳</MenuItem>
+                  <MenuItem value={"Child"}>子供 3歳~小6</MenuItem>
+                  <MenuItem value={"Teen"}>子供 中学生以上</MenuItem>
+                  <MenuItem value={"Adult"}>成人 18歳以上</MenuItem>
+                  <MenuItem value={"Senior"}>高齢者 65歳以上</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
           </div>
           <div>
-            <FormControl>
-              <FormLabel id="gender-radio-buttons">性別</FormLabel>
-              <RadioGroup
-                aria-labelledby="gender-radio-buttons"
-                name={`gender-${index}`}
-                value={householdData[index].gender}
-                onChange={(e) => handleHouseholdDataChange(index, 'gender', e.target.value)}
-                >
-                  <FormControlLabel value="male" control={<Radio />} label="男性" />
-                  <FormControlLabel value="female" control={<Radio />} label="女性" />
-                </RadioGroup>
-            </FormControl>
+            <Box sx={{border:'1px solid', borderRadius:1, p:2, mb:2, minWidth:120}}>
+              <FormControl fullWidth sx = {{maxWidth:300}}>
+                <FormLabel id="gender-radio-buttons">性別</FormLabel>
+                <RadioGroup
+                  aria-labelledby="gender-radio-buttons"
+                  name={`gender-${index}`}
+                  value={householdData[index].gender}
+                  onChange={(e) => handleHouseholdDataChange(index, 'gender', e.target.value)}
+                  >
+                    <FormControlLabel value="male" control={<Radio />} label="男性" />
+                    <FormControlLabel value="female" control={<Radio />} label="女性" />
+                  </RadioGroup>
+              </FormControl>
+            </Box>
           </div>
         </div>
       ))}
-
-      <button onClick={handleSubmit}>必要な防災グッズを確認する</button>
+      
+      <Button onClick={handleSubmit} variant="contained" endIcon={<SendIcon />}>必要な防災グッズを確認する</Button>
     </div>
   );
 };

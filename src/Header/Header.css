@@ -15,9 +15,9 @@ body {
   
   .header {
     text-align: center;
-    background-color: #FF4E88;
+    background-color: #FA8D6F;
     padding: 15px 0;
-    border-bottom: 1px solid #FF4E88;;
+    border-bottom: 1px solid #FA8D6F;;
     margin: 0;
     position: relative;
   }
@@ -30,12 +30,12 @@ body {
   }
 
   .nav-container {
-    background-color: #37DC94; 
+    background-color: #FCC566; 
     padding-top: 0px; 
   }
   
   .nav {
-    background-color: #37DC94;
+    background-color: #FCC566;
     margin: 0;
   }
   
