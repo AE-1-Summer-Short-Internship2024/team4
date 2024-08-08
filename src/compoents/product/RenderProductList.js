@@ -10,6 +10,7 @@ const ProductList = ({ products, userId }) => {
   const [selectedProducts, setSelectedProducts] = useState({});
   const [inventoryData, setInventoryData] = useState({});
 
+  //認証情報と商品情報の取得
   useEffect(() => {
     const initialSelectedProducts = {};
     const updatedProducts = { ...products };
@@ -48,11 +49,14 @@ const ProductList = ({ products, userId }) => {
     fetchInventoryData();
   }, [products, userId]);
 
+
+  //DBに格納されている文字列から数字を抽出する関数
   const extractNumber = (quantityString) => {
     const match = quantityString.match(/\d+/);
     return match ? parseInt(match[0], 10) : 0;
   };
 
+　//商品の選択状態を切り替える関数
   const toggleProductSelection = async (productId, category) => {
     const newSelectedState = !selectedProducts[productId];
     setSelectedProducts((prevState) => ({
@@ -64,7 +68,7 @@ const ProductList = ({ products, userId }) => {
     const productToUpdate = updatedProducts[category].find(product => product.id === productId);
     if (productToUpdate) {
       productToUpdate.purchased = newSelectedState;
-
+      //チェックが入ったら、在庫数を必要量に、チェックが外れたら在庫数を0にする
       const quantityNum = extractNumber(productToUpdate.quantity);
       const updatedInventoryData = {
         ...inventoryData,
@@ -73,7 +77,7 @@ const ProductList = ({ products, userId }) => {
         }
       };
       setInventoryData(updatedInventoryData);
-
+      // DBの更新
       try {
         await setDoc(doc(db, `inventoryData/${userId}`), updatedInventoryData, { merge: true });
 
