@@ -5,6 +5,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import './UserInfo.css';
 
+// DBは英語でデータを保存しているため、日本語に変換するためのマップを設定
 const ageCategoryMap = {
   Infant: '乳幼児 0~2歳',
   Child: '子供 3歳~小6',
@@ -12,12 +13,11 @@ const ageCategoryMap = {
   Adult: '成人 18歳以上',
   Senior: '高齢者 65歳以上'
 };
-
 const genderMap = {
   male: '男性',
   female: '女性'
 };
-
+// 家族の年代と性別に応じた画像を表示するためのリンクを設定
 const imageMap = {
   Infant: {
     male: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi5x8DUwBVjGR2IkVozOhVoe1zMnzIrcemz4s8xMsHR1gP8mV809urM_03Et8VWHxlGHXy1Vo2UD6x1z7SUVtVik0d0wCW37bbAIb1q7WOlKdyRiwpDkJiONBKEvgPdJFJFRTwGNMMeGUbW/s180-c/baby_role_towel_utsubuse.png',
@@ -48,6 +48,7 @@ const UserInfo = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate(); // useNavigateフックを追加
 
+　//ユーザを認証する
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -61,11 +62,12 @@ const UserInfo = () => {
     return () => unsubscribe();
   }, []);
 
+  //ユーザIDが更新されたら、DBから家族情報を取得する
   useEffect(() => {
     const fetchHouseholdData = async () => {
       if (userId) {
         try {
-          const docRef = doc(db, "users", userId);
+          const docRef = doc(db, "usersFamData", userId);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             setHouseholdData(docSnap.data().household);
@@ -93,7 +95,7 @@ const UserInfo = () => {
 
   return (
     <div className="family-info-container">
-      <h1>Family Information</h1>
+      <h1>ユーザ情報</h1>
       {householdData ? (
         <div className="family-info">
           {Object.keys(householdData).map((key, index) => {
