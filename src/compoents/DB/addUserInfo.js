@@ -3,6 +3,11 @@ import { doc, setDoc } from "firebase/firestore";
 import { db, auth } from '../../firebase';
 import { onAuthStateChanged } from "firebase/auth";
 import './addUserInfo.css';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
 //家族の情報を入力してDBに格納するコンポーネント
 const AddHouseholdData = () => {
@@ -119,23 +124,18 @@ const AddHouseholdData = () => {
             </label>
           </div>
           <div>
-            <label>
-              性別:
-              <input
-                type="radio"
+            <FormControl>
+              <FormLabel id="gender-radio-buttons">性別</FormLabel>
+              <RadioGroup
+                aria-labelledby="gender-radio-buttons"
                 name={`gender-${index}`}
-                value="male"
-                checked={householdData[index]?.gender === 'male'}
+                value={householdData[index].gender}
                 onChange={(e) => handleHouseholdDataChange(index, 'gender', e.target.value)}
-              /> 男性
-              <input
-                type="radio"
-                name={`gender-${index}`}
-                value="female"
-                checked={householdData[index]?.gender === 'female'}
-                onChange={(e) => handleHouseholdDataChange(index, 'gender', e.target.value)}
-              /> 女性
-            </label>
+                >
+                  <FormControlLabel value="male" control={<Radio />} label="男性" />
+                  <FormControlLabel value="female" control={<Radio />} label="女性" />
+                </RadioGroup>
+            </FormControl>
           </div>
         </div>
       ))}
