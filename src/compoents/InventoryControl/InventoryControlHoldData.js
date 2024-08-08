@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db, auth } from '../../firebase';
 import { onAuthStateChanged } from "firebase/auth";
 import { calculateNeeds } from '../product/utils/calculateNeeds';
@@ -10,6 +10,7 @@ const DisplayHouseholdData = () => {
   const [householdData, setHouseholdData] = useState(null);
   const [error, setError] = useState('');
   const [neededProducts, setNeededProducts] = useState(null);
+  const [inventoryData, setInventoryData] = useState(null);
 
   　//ユーザを認証する
   useEffect(() => {
@@ -49,6 +50,22 @@ const DisplayHouseholdData = () => {
     }
   };
 
+  //DBから在庫情報を取得する関数
+  const fetchInventoryDataFromDB = async (userId) => {
+    try {
+      const docRef = doc(db, `inventoryData/${userId}`);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data().inventory;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching inventory data: ", error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     const fetchHouseholdData = async () => {
       if (userId) {
@@ -69,6 +86,10 @@ const DisplayHouseholdData = () => {
               setNeededProducts(products);
               saveProductsToDB(userId, products);
             }
+
+            // DBからinventoryを取得
+            const storedInventory = await fetchInventoryDataFromDB(userId);
+            setInventoryData(storedInventory || {});
           } else {
             setError('No household data found');
           }
@@ -89,8 +110,12 @@ const DisplayHouseholdData = () => {
   return (
     <div>
       <h1>備蓄リスト</h1>
-      {neededProducts ? (
-        <InventoryControl products={neededProducts} userId={userId} />
+      {neededProducts && inventoryData ? (
+        <InventoryControl 
+          products={neededProducts} 
+          inventory={inventoryData} 
+          userId={userId} 
+        />
       ) : (
         <p>ロード中...</p>
       )}
