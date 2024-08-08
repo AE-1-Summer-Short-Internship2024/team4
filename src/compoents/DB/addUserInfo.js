@@ -145,20 +145,18 @@ const AddHouseholdData = () => {
             </Box>
           </div>
           <div>
-            <Box sx={{border:'1px solid', borderRadius:1, p:2, mb:2, minWidth:120}}>
-              <FormControl fullWidth sx = {{maxWidth:300}}>
-                <FormLabel id="gender-radio-buttons">性別</FormLabel>
-                <RadioGroup
-                  aria-labelledby="gender-radio-buttons"
-                  name={`gender-${index}`}
-                  value={householdData[index].gender}
-                  onChange={(e) => handleHouseholdDataChange(index, 'gender', e.target.value)}
-                  >
-                    <FormControlLabel value="male" control={<Radio />} label="男性" />
-                    <FormControlLabel value="female" control={<Radio />} label="女性" />
-                  </RadioGroup>
-              </FormControl>
-            </Box>
+            <FormControl fullWidth sx = {{maxWidth:300}}>
+              <FormLabel id="gender-radio-buttons">性別</FormLabel>
+              <RadioGroup
+                aria-labelledby="gender-radio-buttons"
+                name={`gender-${index}`}
+                value={householdData[index].gender}
+                onChange={(e) => handleHouseholdDataChange(index, 'gender', e.target.value)}
+                >
+                  <FormControlLabel value="male" control={<Radio />} label="男性" />
+                  <FormControlLabel value="female" control={<Radio />} label="女性" />
+                </RadioGroup>
+            </FormControl>
           </div>
         </div>
       ))}
