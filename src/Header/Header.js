@@ -1,5 +1,4 @@
-// src/Header.js
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import './Header.css';
 
@@ -9,19 +8,23 @@ const Header = () => {
   // 現在のパスと一致する場合にactiveクラスを返す関数
   const getActiveClass = (path) => location.pathname === path ? 'active' : '';
 
+  const handleLogoClick = () => {
+    window.location.href = '/login';
+  };
+
   return (
     <>
       <header className="header">
-        <h1>備蓄くん</h1>
+        <h1 onClick={handleLogoClick} className="title-link">備蓄くん</h1>
       </header>
       <div className="nav-container">
         <nav className="nav">
           <ul>
             <li>
-              <a href="/home" className={getActiveClass('/home')}>　ホーム　</a>
+              <a href="/home" className={getActiveClass('/home')}>ホーム</a>
             </li>
             <li>
-              <a href="/inventory" className={getActiveClass('/inventory')}>在庫リスト</a>
+              <a href="/stock" className={getActiveClass('/stock')}>購入済み商品リスト</a>
             </li>
             <li>
               <a href="/user" className={getActiveClass('/user')}>ユーザ情報</a>
@@ -42,6 +45,7 @@ const App = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/userregist" element={<Userregist />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );
@@ -51,5 +55,6 @@ const App = () => {
 const Home = () => <div></div>;
 const Inventory = () => <div></div>;
 const Userregist = () => <div></div>;
+const Login = () => <div>ログインページ</div>;
 
 export default App;

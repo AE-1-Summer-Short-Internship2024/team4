@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { doc, updateDoc, getDoc, setDoc } from "firebase/firestore";
 import { db } from '../../firebase';
+import Checkbox from '@mui/material/Checkbox';
 import './RenderProductList.css';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Link from '@mui/material/Link';
 
 const ProductList = ({ products, userId }) => {
   const [selectedProducts, setSelectedProducts] = useState({});
   const [inventoryData, setInventoryData] = useState({});
 
+  //認証情報と商品情報の取得
   useEffect(() => {
     const initialSelectedProducts = {};
     const updatedProducts = { ...products };
@@ -45,11 +49,14 @@ const ProductList = ({ products, userId }) => {
     fetchInventoryData();
   }, [products, userId]);
 
+
+  //DBに格納されている文字列から数字を抽出する関数
   const extractNumber = (quantityString) => {
     const match = quantityString.match(/\d+/);
     return match ? parseInt(match[0], 10) : 0;
   };
 
+　//商品の選択状態を切り替える関数
   const toggleProductSelection = async (productId, category) => {
     const newSelectedState = !selectedProducts[productId];
     setSelectedProducts((prevState) => ({
@@ -61,22 +68,32 @@ const ProductList = ({ products, userId }) => {
     const productToUpdate = updatedProducts[category].find(product => product.id === productId);
     if (productToUpdate) {
       productToUpdate.purchased = newSelectedState;
-    }
+      //チェックが入ったら、在庫数を必要量に、チェックが外れたら在庫数を0にする
+      const quantityNum = extractNumber(productToUpdate.quantity);
+      const updatedInventoryData = {
+        ...inventoryData,
+        [productId]: {
+          quantity: newSelectedState ? quantityNum : 0,
+        }
+      };
+      setInventoryData(updatedInventoryData);
+      // DBの更新
+      try {
+        await setDoc(doc(db, `inventoryData/${userId}`), updatedInventoryData, { merge: true });
 
-    try {
-      await updateDoc(doc(db, `userProductData/${userId}`), {
-        products: updatedProducts
-      });
-      console.log("Product purchased state successfully updated!");
-    } catch (error) {
-      console.error("Error updating product purchased state: ", error);
+        await updateDoc(doc(db, `userProductData/${userId}`), {
+          products: updatedProducts
+        });
+
+        console.log("Product purchased state and inventory data successfully updated!");
+      } catch (error) {
+        console.error("Error updating product purchased state and inventory data: ", error);
+      }
     }
   };
 
-  const handleInventoryChange = (productId, category, value) => {
+  const handleInventoryChange = async (productId, category, value) => {
     if (value < 0) return;
-
-    const productToUpdate = products[category].find(product => product.id === productId);
 
     const updatedInventoryData = {
       ...inventoryData,
@@ -87,15 +104,28 @@ const ProductList = ({ products, userId }) => {
     setInventoryData(updatedInventoryData);
 
     const updatedProducts = { ...products };
+    const productToUpdate = updatedProducts[category].find(product => product.id === productId);
     if (productToUpdate) {
       const quantityNum = extractNumber(productToUpdate.quantity);
       productToUpdate.purchased = value >= quantityNum;
-    }
 
-    setSelectedProducts((prevState) => ({
-      ...prevState,
-      [productId]: productToUpdate.purchased,
-    }));
+      setSelectedProducts((prevState) => ({
+        ...prevState,
+        [productId]: productToUpdate.purchased,
+      }));
+
+      try {
+        await setDoc(doc(db, `inventoryData/${userId}`), updatedInventoryData, { merge: true });
+
+        await updateDoc(doc(db, `userProductData/${userId}`), {
+          products: updatedProducts
+        });
+
+        console.log("Inventory data successfully updated!");
+      } catch (error) {
+        console.error("Error updating inventory data: ", error);
+      }
+    }
   };
 
   const saveInventoryData = async () => {
@@ -159,11 +189,15 @@ const ProductList = ({ products, userId }) => {
 
     return sortedProductList.map((product) => (
       <div id={`product-${product.id}`} key={product.id} className={`product-detail ${selectedProducts[product.id] ? 'selected' : ''}`}>
-        <input
-          type="checkbox"
+        <FormControlLabel
           checked={!!selectedProducts[product.id]}
           onChange={() => toggleProductSelection(product.id, category)}
+          control={<Checkbox />}
+          label="購入済み"
+          labelPlacement="end"
         />
+      
+        
         <h2>{product.name}</h2>
         <p>量: {product.quantity}</p>
         <p>消費期限: {product.expirationDate}</p>
@@ -175,7 +209,7 @@ const ProductList = ({ products, userId }) => {
           min="0"
         />
         <p>
-          詳細情報を<a href={product.url} target="_blank" rel="noopener noreferrer">楽天市場</a>で確認する。
+          詳細情報を<Link href={product.url} underline="hover" target="_blank" rel="noopener noreferrer">楽天市場</Link>で確認する。
         </p>
       </div>
     ));
