@@ -41,12 +41,13 @@ const PurchasedProducts = () => {
             const purchasedProducts = [];
             Object.keys(userProductData).forEach(category => {
               userProductData[category].forEach(product => {
-                if (product.purchased) {
-                  const inventoryProduct = inventoryData[product.id];
-                  const inventoryQuantity = inventoryProduct ? inventoryProduct.quantity : 0;
-                  purchasedProducts.push({ 
-                    ...product, 
-                    category
+                const inventoryProduct = inventoryData[product.id];
+                const inventoryQuantity = inventoryProduct ? inventoryProduct.quantity : 0;
+                if (product.purchased || inventoryQuantity > 0) {
+                  purchasedProducts.push({
+                    ...product,
+                    category,
+                    inventoryQuantity
                   });
                 }
               });
@@ -54,7 +55,7 @@ const PurchasedProducts = () => {
 
             purchasedProducts.sort((a, b) => new Date(a.expirationDate) - new Date(b.expirationDate));
 
-            setProducts(purchasedProducts.filter(product => product.inventoryQuantity > 0));
+            setProducts(purchasedProducts);
             setInventoryData(inventoryData);
           } else {
             setProducts([]);
@@ -71,7 +72,7 @@ const PurchasedProducts = () => {
   }, [userId]);
 
   const handleUpdateExpirationDate = async (id, category, value) => {
-    const updatedProducts = products.map(product => 
+    const updatedProducts = products.map(product =>
       product.id === id ? { ...product, expirationDate: value } : product
     );
 
@@ -103,7 +104,7 @@ const PurchasedProducts = () => {
           const updatedProduct = { ...product, purchased: false, inventoryQuantity: value };
           updateProductPurchasedStatus(updatedProduct);
           return updatedProduct;
-        } else if (value >=  extractNumber(product.quantity)) {
+        } else if (value >= extractNumber(product.quantity)) {
           const updatedProduct = { ...product, purchased: true, inventoryQuantity: value };
           updateProductPurchasedStatus(updatedProduct);
           return updatedProduct;
@@ -112,7 +113,7 @@ const PurchasedProducts = () => {
       return product;
     });
 
-    setProducts(updatedProducts.filter(product => product.inventoryQuantity > 0));
+    setProducts(updatedProducts);
   };
 
   const updateProductPurchasedStatus = async (productToUpdate) => {
@@ -140,15 +141,14 @@ const PurchasedProducts = () => {
 
       const updatedProducts = products.map(product => {
         const inventoryQuantity = inventoryData[product.id]?.quantity || 0;
-        if (inventoryQuantity <  extractNumber(product.quantity)) {
-          console.log("aaaaaaa");
+        if (inventoryQuantity < extractNumber(product.quantity)) {
           product.purchased = false;
-        } else if (inventoryQuantity >=  extractNumber(product.quantity)) {
+        } else if (inventoryQuantity >= extractNumber(product.quantity)) {
           product.purchased = true;
         }
         updateProductPurchasedStatus(product);
         return { ...product, inventoryQuantity };
-      }).filter(product => product.inventoryQuantity > 0);
+      });
 
       setProducts(updatedProducts);
 
@@ -186,21 +186,22 @@ const PurchasedProducts = () => {
                 />
                 <p> / {product.quantity}</p>
               </label>
-              <label>
-                消費期限:
-                <input
-                  type="date"
-                  value={product.expirationDate}
-                  onChange={(e) => handleUpdateExpirationDate(product.id, product.category, e.target.value)}
-                />
-              </label>
+              {product.expirationDate && (
+                <label>
+                  消費期限:
+                  <input
+                    type="date"
+                    value={product.expirationDate}
+                    onChange={(e) => handleUpdateExpirationDate(product.id, product.category, e.target.value)}
+                  />
+                </label>
+              )}
             </div>
           ))}
         </div>
       ) : (
         <p>No purchased products available</p>
       )}
-      <button onClick={saveInventoryData}>在庫データを保存</button>
     </div>
   );
 };

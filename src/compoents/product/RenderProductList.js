@@ -236,7 +236,6 @@ const ProductList = ({ products, userId }) => {
           return renderProductDetails(sortedProductList, category);
         })}
       </div>
-      <button onClick={saveInventoryData}>在庫データを保存</button>
     </div>
   );
 };
