@@ -181,6 +181,7 @@ const PurchasedProducts = () => {
                 在庫数:
                 <input
                   type="number"
+                  min="0"
                   value={inventoryData[product.id]?.quantity || 0}
                   onChange={(e) => handleUpdateInventoryQuantity(product.id, parseInt(e.target.value, 10))}
                 />
@@ -202,6 +203,7 @@ const PurchasedProducts = () => {
       ) : (
         <p>No purchased products available</p>
       )}
+      <button onClick={saveInventoryData}>在庫データを保存</button>
     </div>
   );
 };
