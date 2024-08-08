@@ -16,7 +16,6 @@ const ProductList = ({ products, userId }) => {
     });
     setSelectedProducts(initialSelectedProducts);
 
-    // Fetch initial inventory data from Firestore
     const fetchInventoryData = async () => {
       try {
         const docSnap = await getDoc(doc(db, `inventoryData/${userId}`));
@@ -81,25 +80,29 @@ const ProductList = ({ products, userId }) => {
 
   const saveInventoryData = async () => {
     try {
-      await setDoc(doc(db, `inventoryData/${userId}`), inventoryData);
-
+      const updatedInventoryData = { ...inventoryData };
       const updatedProducts = { ...products };
+
       Object.keys(inventoryData).forEach(productId => {
         Object.keys(updatedProducts).forEach(category => {
           const productToUpdate = updatedProducts[category].find(product => product.id === productId);
           if (productToUpdate) {
             const quantityNum = extractNumber(productToUpdate.quantity);
-            productToUpdate.purchased = inventoryData[productId] > quantityNum;
+            productToUpdate.purchased = (inventoryData[productId] > quantityNum - 1);
+
+            if (inventoryData[productId] < quantityNum) {
+              delete updatedInventoryData[productId];
+            }
           }
         });
       });
 
-      // Update userProductData in Firestore
+      await setDoc(doc(db, `inventoryData/${userId}`), updatedInventoryData);
+
       await updateDoc(doc(db, `userProductData/${userId}`), {
         products: updatedProducts
       });
 
-      // Update selectedProducts state based on updatedProducts
       const updatedSelectedProducts = {};
       Object.keys(updatedProducts).forEach(category => {
         updatedProducts[category].forEach(product => {
