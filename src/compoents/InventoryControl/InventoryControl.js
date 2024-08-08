@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from '../../firebase';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
@@ -11,42 +13,84 @@ const columns = [
   { field: 'expiryDate', headerName: '賞味期限', flex: 1, editable: true },
 ];
 
-const initialRows = [
-  { id: '水2L', stock: 10, expiryDate: '2024-12-01' },
-  { id: '缶詰', stock: 15, expiryDate: '2025-06-15' },
-  { id: 'インスタントラーメン', stock: 20, expiryDate: '2023-11-10' },
-  { id: '乾燥野菜', stock: 5, expiryDate: '2023-09-05' },
-  { id: '非常食ビスケット', stock: 30, expiryDate: '2024-03-20' },
-  { id: 'ミネラルウォーター500ml', stock: 50, expiryDate: '2023-12-31' },
-  { id: 'アルファ米', stock: 25, expiryDate: '2024-05-10' },
-  { id: 'カロリーメイト', stock: 40, expiryDate: '2023-10-15' },
-  { id: '栄養ドリンク', stock: 35, expiryDate: '2023-08-20' },
-];
-
-export default function DataGridDemo() {
-  const [rows, setRows] = useState(initialRows);
+const InventoryControl = ({ products, userId }) => {
+  const [rows, setRows] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState({});
   const [newItem, setNewItem] = useState({ id: '', stock: '', expiryDate: '' });
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleDelete = () => {
+  useEffect(() => {
+    const initialSelectedProducts = {};
+    const initialRows = [];
+
+    Object.keys(products).forEach(category => {
+      products[category].forEach(product => {
+        initialSelectedProducts[product.id] = product.purchased;
+        initialRows.push({
+          id: product.name,
+          stock: product.quantity,
+          expiryDate: product.expirationDate
+        });
+      });
+    });
+
+    setSelectedProducts(initialSelectedProducts);
+    setRows(initialRows);
+  }, [products]);
+
+  const handleDelete = async () => {
+    // 選択された行をフィルタリングして新しい行リストを作成
     const newRows = rows.filter((row) => !selectionModel.includes(row.id));
     setRows(newRows);
     setSelectionModel([]);
-  };
 
-  const handleAdd = () => {
-    if (newItem.id && newItem.stock && newItem.expiryDate) {
-      setRows([...rows, { id: newItem.id, stock: newItem.stock, expiryDate: newItem.expiryDate }]);
-      setNewItem({ id: '', stock: '', expiryDate: '' });
-      setErrorMessage('');
-    } else {
-      setErrorMessage('データを全て入力してください');
+    const updatedProducts = { ...products };
+
+    // 削除する商品のpurchasedをfalseに、stockを0に更新
+    Object.keys(products).forEach(category => {
+      products[category].forEach(product => {
+        if (selectionModel.includes(product.name)) {
+          product.purchased = false;
+          product.quantity = 0;
+        }
+      });
+    });
+
+    // データベースを更新
+    try {
+      await updateDoc(doc(db, `userProductData/${userId}`), {
+        products: updatedProducts
+      });
+      console.log("Products successfully updated!");
+    } catch (error) {
+      console.error("Error updating products: ", error);
     }
   };
 
-  const getSelectedItems = () => {
-    return rows.filter((row) => selectionModel.includes(row.id)).map((row) => row.id);
+  const handleUpdate = async () => {
+    const updatedProducts = { ...products };
+
+    // 行のデータを元にproductsを更新
+    rows.forEach(row => {
+      Object.keys(updatedProducts).forEach(category => {
+        const productToUpdate = updatedProducts[category].find(product => product.name === row.id);
+        if (productToUpdate) {
+          productToUpdate.quantity = row.stock;
+          productToUpdate.expirationDate = row.expiryDate;
+        }
+      });
+    });
+
+    // データベースを更新
+    try {
+      await updateDoc(doc(db, `userProductData/${userId}`), {
+        products: updatedProducts
+      });
+      console.log("Products successfully updated!");
+    } catch (error) {
+      console.error("Error updating products: ", error);
+    }
   };
 
   return (
@@ -68,7 +112,16 @@ export default function DataGridDemo() {
         checkboxSelection
         disableRowSelectionOnClick
         onSelectionModelChange={(newSelectionModel) => {
-          setSelectionModel(newSelectionModel.map((id) => String(id))); 
+          setSelectionModel(newSelectionModel);
+        }}
+        onCellEditCommit={(params) => {
+          const updatedRows = rows.map(row => {
+            if (row.id === params.id) {
+              return { ...row, [params.field]: params.value };
+            }
+            return row;
+          });
+          setRows(updatedRows);
         }}
       />
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 2 }}>
@@ -98,14 +151,19 @@ export default function DataGridDemo() {
           </Typography>
         )}
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button variant="contained" color="primary" onClick={handleAdd}>
+          <Button variant="contained" color="primary" onClick={() => { /* handleAdd logic */ }}>
             追加
           </Button>
           <Button variant="contained" color="secondary" onClick={handleDelete}>
             削除
+          </Button>
+          <Button variant="contained" color="success" onClick={handleUpdate}>
+            更新
           </Button>
         </Box>
       </Box>
     </Box>
   );
 }
+
+export default InventoryControl;
