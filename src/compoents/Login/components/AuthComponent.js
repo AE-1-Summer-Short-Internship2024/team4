@@ -50,13 +50,13 @@ const AuthComponent = () => {
         } else {
           // householdフィールドが存在しない場合
           console.log('既存ユーザー (household情報なし)', user.email);
-          window.location.href = '/user';
+          window.location.href = '/add';
         }
       } else {
         // ドキュメントが存在しない場合（新規ユーザー）
         console.log('新規ユーザー', user.email);
         await setDoc(userDocRef, { email: user.email });
-        window.location.href = '/user';
+        window.location.href = '/add';
       }
 
     } catch (error) {
