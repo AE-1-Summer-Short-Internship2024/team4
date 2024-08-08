@@ -1,34 +1,32 @@
-// src/utils/calculateNeeds.js
-
 export const calculateNeeds = (householdData) => {
-  // 楽天市場の検索結果ページを設定するためのベースURL
   const baseUrl = 'https://search.rakuten.co.jp/search/mall/';
 
-  // 各商品の必要量を計算
-  let waterQuantity = 0;
-  let riceQuantity = 0;
-  let retortFoodQuantity = 0;
-  let cannedFoodQuantity = 0;
-  let supplementQuantity = 0;
-  let vegetableJuiceQuantity = 0;
-  let cheeseProteinBarQuantity = 0;
-  let healthDrinkPowderQuantity = 0;
-  let seasoningSetQuantity = 0;
-  let dryNoodlesQuantity = 0;
-  let polishedRiceQuantity = 0;
-  let drinkQuantity = 0;
-  let snackQuantity = 0;
-  let cannedFruitQuantity = 0;
-  let driedFoodQuantity = 0;
-  let freezeDriedFoodQuantity = 0;
-
-  let wetWipesQuantity = 0;
-  let masksQuantity = 0;
-  let mouthwashQuantity = 0;
-  let contactLensQuantity = 0;
-  let portableToiletQuantity = 0;
-  let toothbrushWipesQuantity = 0;
-  let bodyTowelQuantity = 0;
+  // 各商品の必要量を初期化
+  const initialQuantities = {
+    waterQuantity: 0,
+    riceQuantity: 0,
+    retortFoodQuantity: 0,
+    cannedFoodQuantity: 0,
+    supplementQuantity: 0,
+    vegetableJuiceQuantity: 0,
+    cheeseProteinBarQuantity: 0,
+    healthDrinkPowderQuantity: 0,
+    seasoningSetQuantity: 0,
+    dryNoodlesQuantity: 0,
+    polishedRiceQuantity: 0,
+    drinkQuantity: 0,
+    snackQuantity: 0,
+    cannedFruitQuantity: 0,
+    driedFoodQuantity: 0,
+    freezeDriedFoodQuantity: 0,
+    wetWipesQuantity: 0,
+    masksQuantity: 0,
+    mouthwashQuantity: 0,
+    contactLensQuantity: 0,
+    portableToiletQuantity: 0,
+    toothbrushWipesQuantity: 0,
+    bodyTowelQuantity: 0,
+  };
 
   // 各年齢グループの倍率
   const ageMultipliers = {
@@ -50,67 +48,88 @@ export const calculateNeeds = (householdData) => {
     const ageMultiplier = ageMultipliers[member.ageCategory];
     const genderMultiplier = genderMultipliers[member.gender];
 
-    waterQuantity += 2 * ageMultiplier * genderMultiplier;
-    riceQuantity += 2 * ageMultiplier * genderMultiplier;
-    retortFoodQuantity += 2 * ageMultiplier * genderMultiplier;
-    cannedFoodQuantity += 1.5 * ageMultiplier * genderMultiplier;
-    supplementQuantity += 2 * ageMultiplier * genderMultiplier;
-    vegetableJuiceQuantity += 3 * ageMultiplier * genderMultiplier;
-    cheeseProteinBarQuantity += 1 * ageMultiplier * genderMultiplier;
-    healthDrinkPowderQuantity += 1 * ageMultiplier * genderMultiplier;
-    seasoningSetQuantity += 0.1 * ageMultiplier * genderMultiplier;
-    dryNoodlesQuantity += 2 * ageMultiplier * genderMultiplier;
-    polishedRiceQuantity += 0.3 * ageMultiplier * genderMultiplier;
-    drinkQuantity += 2 * ageMultiplier * genderMultiplier;
-    snackQuantity += 2 * ageMultiplier * genderMultiplier;
-    cannedFruitQuantity += 1 * ageMultiplier * genderMultiplier;
-    driedFoodQuantity += 0.2 * ageMultiplier * genderMultiplier;
-    freezeDriedFoodQuantity += 0.2 * ageMultiplier * genderMultiplier;
-
-    wetWipesQuantity += 10 * ageMultiplier * genderMultiplier;
-    masksQuantity += 1 * ageMultiplier * genderMultiplier;
-    mouthwashQuantity += 630 * ageMultiplier * genderMultiplier;
-    contactLensQuantity += 1 * ageMultiplier * genderMultiplier; // 1人1か月分
-    portableToiletQuantity += 35 * ageMultiplier * genderMultiplier;
-    toothbrushWipesQuantity += 1 * ageMultiplier * genderMultiplier;
-    bodyTowelQuantity += 1 * ageMultiplier * genderMultiplier;
+    for (let key in initialQuantities) {
+      switch (key) {
+        case 'waterQuantity':
+        case 'riceQuantity':
+        case 'retortFoodQuantity':
+        case 'supplementQuantity':
+        case 'vegetableJuiceQuantity':
+        case 'dryNoodlesQuantity':
+        case 'drinkQuantity':
+        case 'snackQuantity':
+          initialQuantities[key] += 2 * ageMultiplier * genderMultiplier;
+          break;
+        case 'cannedFoodQuantity':
+          initialQuantities[key] += 1.5 * ageMultiplier * genderMultiplier;
+          break;
+        case 'cheeseProteinBarQuantity':
+        case 'cannedFruitQuantity':
+          initialQuantities[key] += 1 * ageMultiplier * genderMultiplier;
+          break;
+        case 'healthDrinkPowderQuantity':
+        case 'toothbrushWipesQuantity':
+        case 'bodyTowelQuantity':
+        case 'masksQuantity':
+        case 'contactLensQuantity':
+          initialQuantities[key] += 1 * ageMultiplier * genderMultiplier;
+          break;
+        case 'seasoningSetQuantity':
+        case 'driedFoodQuantity':
+        case 'freezeDriedFoodQuantity':
+          initialQuantities[key] += 0.2 * ageMultiplier * genderMultiplier;
+          break;
+        case 'polishedRiceQuantity':
+          initialQuantities[key] += 0.3 * ageMultiplier * genderMultiplier;
+          break;
+        case 'wetWipesQuantity':
+          initialQuantities[key] += 10 * ageMultiplier * genderMultiplier;
+          break;
+        case 'mouthwashQuantity':
+          initialQuantities[key] += 630 * ageMultiplier * genderMultiplier;
+          break;
+        case 'portableToiletQuantity':
+          initialQuantities[key] += 35 * ageMultiplier * genderMultiplier;
+          break;
+      }
+    }
   });
 
   // 各商品の必要量をベースURLと共に設定
   const products = {
     food: [
-      { id: 1, name: '水', quantity: `${Math.round(waterQuantity)}L`, url: `${baseUrl}水`, purchased: false, expirationDate: '2025-01-01'},
-      { id: 2, name: 'レトルトご飯', quantity: `${Math.round(riceQuantity)}食`, url: `${baseUrl}レトルトご飯`, purchased: false },
-      { id: 3, name: 'レトルト食品', quantity: `${Math.round(retortFoodQuantity)}個`, url: `${baseUrl}レトルト食品`, purchased: false },
-      { id: 4, name: '缶詰(さばの味噌煮、野菜など)', quantity: `${Math.round(cannedFoodQuantity)}缶`, url: `${baseUrl}缶詰(さばの味噌煮、野菜など)`, purchased: false },
-      { id: 5, name: '栄養補助食品', quantity: `${Math.round(supplementQuantity)}箱`, url: `${baseUrl}栄養補助食品`, purchased: false },
-      { id: 6, name: '野菜ジュース', quantity: `${Math.round(vegetableJuiceQuantity)}本`, url: `${baseUrl}野菜ジュース`, purchased: false },
-      { id: 7, name: 'チーズ・プロテインバー等', quantity: `${Math.round(cheeseProteinBarQuantity)}パック`, url: `${baseUrl}チーズ・プロテインバー等`, purchased: false },
-      { id: 8, name: '健康飲料粉末', quantity: `${Math.round(healthDrinkPowderQuantity)}袋`, url: `${baseUrl}健康飲料粉末`, purchased: false },
-      { id: 9, name: '調味料セット', quantity: `${Math.round(seasoningSetQuantity)}セット`, url: `${baseUrl}調味料セット`, purchased: false },
-      { id: 10, name: '乾麺 即席麺', quantity: `${Math.round(dryNoodlesQuantity)}パック`, url: `${baseUrl}乾麺 即席麺`, purchased: false },
-      { id: 11, name: '無洗米', quantity: `${Math.round(polishedRiceQuantity)}kg`, url: `${baseUrl}無洗米`, purchased: false },
-      { id: 12, name: '飲み物', quantity: `${Math.round(drinkQuantity)}本`, url: `${baseUrl}飲み物`, purchased: false },
-      { id: 13, name: 'お菓子', quantity: `${Math.round(snackQuantity)}パック`, url: `${baseUrl}お菓子`, purchased: false },
-      { id: 14, name: '果物の缶詰', quantity: `${Math.round(cannedFruitQuantity)}缶`, url: `${baseUrl}果物の缶詰`, purchased: false },
-      { id: 15, name: '乾物', quantity: `${Math.round(driedFoodQuantity)}kg`, url: `${baseUrl}乾物`, purchased: false },
-      { id: 16, name: 'フリーズドライ食品', quantity: `${Math.round(freezeDriedFoodQuantity)}kg`, url: `${baseUrl}フリーズドライ食品`, purchased: false },
+      { id: 1, name: '水', quantity: `${Math.round(initialQuantities.waterQuantity)}L`, url: `${baseUrl}水`, purchased: false },
+      { id: 2, name: 'レトルトご飯', quantity: `${Math.round(initialQuantities.riceQuantity)}食`, url: `${baseUrl}レトルトご飯`, purchased: false },
+      { id: 3, name: 'レトルト食品', quantity: `${Math.round(initialQuantities.retortFoodQuantity)}個`, url: `${baseUrl}レトルト食品`, purchased: false },
+      { id: 4, name: '缶詰(さばの味噌煮、野菜など)', quantity: `${Math.round(initialQuantities.cannedFoodQuantity)}缶`, url: `${baseUrl}缶詰(さばの味噌煮、野菜など)`, purchased: false },
+      { id: 5, name: '栄養補助食品', quantity: `${Math.round(initialQuantities.supplementQuantity)}箱`, url: `${baseUrl}栄養補助食品`, purchased: false },
+      { id: 6, name: '野菜ジュース', quantity: `${Math.round(initialQuantities.vegetableJuiceQuantity)}本`, url: `${baseUrl}野菜ジュース`, purchased: false },
+      { id: 7, name: 'チーズ・プロテインバー等', quantity: `${Math.round(initialQuantities.cheeseProteinBarQuantity)}パック`, url: `${baseUrl}チーズ・プロテインバー等`, purchased: false },
+      { id: 8, name: '健康飲料粉末', quantity: `${Math.round(initialQuantities.healthDrinkPowderQuantity)}袋`, url: `${baseUrl}健康飲料粉末`, purchased: false },
+      { id: 9, name: '調味料セット', quantity: `${Math.round(initialQuantities.seasoningSetQuantity)}セット`, url: `${baseUrl}調味料セット`, purchased: false },
+      { id: 10, name: '乾麺 即席麺', quantity: `${Math.round(initialQuantities.dryNoodlesQuantity)}パック`, url: `${baseUrl}乾麺 即席麺`, purchased: false },
+      { id: 11, name: '無洗米', quantity: `${Math.round(initialQuantities.polishedRiceQuantity)}kg`, url: `${baseUrl}無洗米`, purchased: false },
+      { id: 12, name: '飲み物', quantity: `${Math.round(initialQuantities.drinkQuantity)}本`, url: `${baseUrl}飲み物`, purchased: false },
+      { id: 13, name: 'お菓子', quantity: `${Math.round(initialQuantities.snackQuantity)}パック`, url: `${baseUrl}お菓子`, purchased: false },
+      { id: 14, name: '果物の缶詰', quantity: `${Math.round(initialQuantities.cannedFruitQuantity)}缶`, url: `${baseUrl}果物の缶詰`, purchased: false },
+      { id: 15, name: '乾物', quantity: `${Math.round(initialQuantities.driedFoodQuantity)}kg`, url: `${baseUrl}乾物`, purchased: false },
+      { id: 16, name: 'フリーズドライ食品', quantity: `${Math.round(initialQuantities.freezeDriedFoodQuantity)}kg`, url: `${baseUrl}フリーズドライ食品`, purchased: false },
     ],
     hygiene: [
-      { id: 17, name: '除菌ウェットティッシュ', quantity: `${Math.round(wetWipesQuantity)}枚`, url: `${baseUrl}除菌ウェットティッシュ`, purchased: false },
+      { id: 17, name: '除菌ウェットティッシュ', quantity: `${Math.round(initialQuantities.wetWipesQuantity)}枚`, url: `${baseUrl}除菌ウェットティッシュ`, purchased: false },
       { id: 18, name: 'アルコールスプレー', quantity: '1本', url: `${baseUrl}アルコールスプレー`, purchased: false },
-      { id: 19, name: 'マスク', quantity: `${Math.round(masksQuantity)}枚`, url: `${baseUrl}マスク`, purchased: false },
-      { id: 20, name: '口内洗浄液', quantity: `${Math.round(mouthwashQuantity)}ml`, url: `${baseUrl}口内洗浄液`, purchased: false },
+      { id: 19, name: 'マスク', quantity: `${Math.round(initialQuantities.masksQuantity)}枚`, url: `${baseUrl}マスク`, purchased: false },
+      { id: 20, name: '口内洗浄液', quantity: `${Math.round(initialQuantities.mouthwashQuantity)}ml`, url: `${baseUrl}口内洗浄液`, purchased: false },
       { id: 21, name: '救急箱', quantity: '1箱', url: `${baseUrl}救急箱`, purchased: false },
       { id: 22, name: '常備薬', quantity: '1箱', url: `${baseUrl}常備薬`, purchased: false },
-      { id: 23, name: '使い捨てコンタクトレンズ', quantity: `${Math.round(contactLensQuantity)}人1か月分`, url: `${baseUrl}使い捨てコンタクトレンズ`, purchased: false },
-      { id: 24, name: '携帯トイレ・簡易トイレ', quantity: `${Math.round(portableToiletQuantity)}回分`, url: `${baseUrl}携帯トイレ・簡易トイレ`, purchased: false },
-      { id: 25, name: '歯みがき用ウェットティッシュ', quantity: `${Math.round(toothbrushWipesQuantity)}枚`, url: `${baseUrl}歯みがき用ウェットティッシュ`, purchased: false },
-      { id: 26, name: 'ウェットボディタオル', quantity: `${Math.round(bodyTowelQuantity)}枚`, url: `${baseUrl}ウェットボディタオル`, purchased: false },
+      { id: 23, name: '使い捨てコンタクトレンズ', quantity: `${Math.round(initialQuantities.contactLensQuantity)}人1か月分`, url: `${baseUrl}使い捨てコンタクトレンズ`, purchased: false },
+      { id: 24, name: '携帯トイレ・簡易トイレ', quantity: `${Math.round(initialQuantities.portableToiletQuantity)}回分`, url: `${baseUrl}携帯トイレ・簡易トイレ`, purchased: false },
+      { id: 25, name: '歯みがき用ウェットティッシュ', quantity: `${Math.round(initialQuantities.toothbrushWipesQuantity)}枚`, url: `${baseUrl}歯みがき用ウェットティッシュ`, purchased: false },
+      { id: 26, name: 'ウェットボディタオル', quantity: `${Math.round(initialQuantities.bodyTowelQuantity)}枚`, url: `${baseUrl}ウェットボディタオル`, purchased: false },
     ],
     daily: [
       { id: 27, name: 'カセットコンロ', quantity: '1台', url: `${baseUrl}カセットコンロ`, purchased: false },
-      { id: 28, name: 'カセットボンベ', quantity: "1台", url: `${baseUrl}カセットボンベ`, purchased: false },
+      { id: 28, name: 'カセットボンベ', quantity: '1セット', url: `${baseUrl}カセットボンベ`, purchased: false },
       { id: 29, name: 'ラップ', quantity: '1本', url: `${baseUrl}ラップ`, purchased: false },
       { id: 30, name: 'ポリ袋', quantity: '1箱', url: `${baseUrl}ポリ袋`, purchased: false },
       { id: 31, name: 'ビニール手袋', quantity: '1箱', url: `${baseUrl}ビニール手袋`, purchased: false },
@@ -138,3 +157,4 @@ export const calculateNeeds = (householdData) => {
 
   return products;
 };
+
