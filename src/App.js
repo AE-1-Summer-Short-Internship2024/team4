@@ -8,6 +8,7 @@ import Login_app from './compoents/Login/Login_app';
 import AddHouseholdData from './compoents/DB/addUserInfo';
 import DisplayHouseholdData from './compoents/product/DisplayHouseHoldData';
 import UserInfo from './compoents/user_info/UserInfo';
+import PurchasedProducts from './compoents/stock/PurchasedProducts';
 import AuthRoute from './compoents/Login/components/AuthRoute';
 
 import {
@@ -16,6 +17,7 @@ import {
   Route,
   Navigate
 } from "react-router-dom";
+
 
 
 function App() {
@@ -40,6 +42,7 @@ function App() {
           <Route path="/add" element={< AddHouseholdData/>} />
 
           <Route path="/user" element={< UserInfo/>} />
+          <Route path="/stock" element={< PurchasedProducts/>} />
 
         </Routes>
 
