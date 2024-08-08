@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import Header from './Header/Header';
 import InventoryControlHoldData from './compoents/InventoryControl/InventoryControlHoldData';
-import UserRegist from './compoents/main/UserRegist';
 import InventoryControl from './compoents/InventoryControl/InventoryControl';
 import ProductList from './compoents/product/RenderProductList';
 import Login_app from './compoents/Login/Login_app';
