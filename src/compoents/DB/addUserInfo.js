@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { doc, setDoc } from "firebase/firestore";
 import { db, auth } from '../../firebase';
 import { onAuthStateChanged } from "firebase/auth";
+import './addUserInfo.css';
 
 //家族の情報を入力してDBに格納するコンポーネント
 const AddHouseholdData = () => {
@@ -43,7 +44,7 @@ const AddHouseholdData = () => {
     for (let i = 0; i < householdData.length; i++) {
       const { ageCategory, gender } = householdData[i];
       if (!ageCategory || !gender) {
-        return `家族メンバー ${i + 1} の全てのフィールドを入力してください。`;
+        return `${i + 1} 人目の情報を入力してください。`;
       }
     }
 
@@ -59,7 +60,7 @@ const AddHouseholdData = () => {
     }
 
     if (!userId) {
-      alert("Please sign in first");
+      alert("ログインしてください。");
       return;
     }
 
@@ -83,12 +84,12 @@ const AddHouseholdData = () => {
   };
 
   return (
-    <div>
-      <h1>家族の情報を入力</h1>
+    <div className='fill-in'>
+      <div className='midashi'><h1>あなたの家族に必要な防災グッズを提案します。</h1></div>
+      <h2>あなたと、一緒に住んでいる家族の情報を入力してください。</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      <div>
-        <label>
-          家族の人数を入力
+      <div className='householdcount'>
+        <label>家族の人数を入力
           <input
             type="number"
             value={householdCount}
@@ -100,7 +101,7 @@ const AddHouseholdData = () => {
 
       {householdData.map((_, index) => (
         <div key={index}>
-          <h3>{index + 1}人目の性別・年代</h3>
+          <h3>{index + 1}人目の世代・性別</h3>
           <div>
             <label>
               世代:
@@ -139,7 +140,7 @@ const AddHouseholdData = () => {
         </div>
       ))}
 
-      <button onClick={handleSubmit}>DBに送信</button>
+      <button onClick={handleSubmit}>必要な防災グッズを確認する</button>
     </div>
   );
 };
