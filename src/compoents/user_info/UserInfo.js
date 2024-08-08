@@ -115,7 +115,7 @@ const UserInfo = () => {
       ) : (
         <p>No household data available</p>
       )}
-      <button onClick={() => navigate('/Login')}>ログイン設定</button> {/* リダイレクトボタンを追加 */}
+      <button className="user-button" onClick={() => navigate('/Login')}>ログイン設定</button> {/* リダイレクトボタンを追加 */}
     </div>
   );
 };
