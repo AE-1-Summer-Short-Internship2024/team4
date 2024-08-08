@@ -65,11 +65,10 @@ const ProductList = ({ products, userId }) => {
     setInventoryData(updatedInventoryData);
 
     const updatedProducts = { ...products };
-    const productToUpdate = updatedProducts[category].find(product => product.id === productId);
-
     if (productToUpdate) {
       const quantityNum = extractNumber(productToUpdate.quantity);
-      productToUpdate.purchased = value > quantityNum;
+      // 同数の場合でもチェックボックスが外れないようにする
+      productToUpdate.purchased = value >= quantityNum;
     }
 
     setSelectedProducts((prevState) => ({
@@ -83,20 +82,21 @@ const ProductList = ({ products, userId }) => {
       const updatedInventoryData = { ...inventoryData };
       const updatedProducts = { ...products };
 
-      Object.keys(inventoryData).forEach(productId => {
+      Object.keys(updatedInventoryData).forEach(productId => {
         Object.keys(updatedProducts).forEach(category => {
           const productToUpdate = updatedProducts[category].find(product => product.id === productId);
           if (productToUpdate) {
             const quantityNum = extractNumber(productToUpdate.quantity);
-            productToUpdate.purchased = (inventoryData[productId] > quantityNum - 1);
+            productToUpdate.purchased = (updatedInventoryData[productId].quantity >= quantityNum);
 
-            if (inventoryData[productId] < quantityNum) {
+            if (updatedInventoryData[productId].quantity < quantityNum) {
               delete updatedInventoryData[productId];
             }
           }
         });
       });
 
+      // データベースに quantity、name、expirationDate を含む在庫データを保存
       await setDoc(doc(db, `inventoryData/${userId}`), updatedInventoryData);
 
       await updateDoc(doc(db, `userProductData/${userId}`), {
@@ -149,7 +149,7 @@ const ProductList = ({ products, userId }) => {
         <p>消費期限: {product.expirationDate}</p>
         <input
           type="number"
-          value={inventoryData[product.id] || ''}
+          value={inventoryData[product.id]?.quantity || ''}
           onChange={(e) => handleInventoryChange(product.id, category, parseInt(e.target.value, 10))}
           placeholder="在庫数を入力"
           min="0"
