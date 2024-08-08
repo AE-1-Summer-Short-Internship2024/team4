@@ -64,22 +64,32 @@ const ProductList = ({ products, userId }) => {
     const productToUpdate = updatedProducts[category].find(product => product.id === productId);
     if (productToUpdate) {
       productToUpdate.purchased = newSelectedState;
-    }
 
-    try {
-      await updateDoc(doc(db, `userProductData/${userId}`), {
-        products: updatedProducts
-      });
-      console.log("Product purchased state successfully updated!");
-    } catch (error) {
-      console.error("Error updating product purchased state: ", error);
+      const quantityNum = extractNumber(productToUpdate.quantity);
+      const updatedInventoryData = {
+        ...inventoryData,
+        [productId]: {
+          quantity: newSelectedState ? quantityNum : 0,
+        }
+      };
+      setInventoryData(updatedInventoryData);
+
+      try {
+        await setDoc(doc(db, `inventoryData/${userId}`), updatedInventoryData, { merge: true });
+
+        await updateDoc(doc(db, `userProductData/${userId}`), {
+          products: updatedProducts
+        });
+
+        console.log("Product purchased state and inventory data successfully updated!");
+      } catch (error) {
+        console.error("Error updating product purchased state and inventory data: ", error);
+      }
     }
   };
 
-  const handleInventoryChange = (productId, category, value) => {
+  const handleInventoryChange = async (productId, category, value) => {
     if (value < 0) return;
-
-    const productToUpdate = products[category].find(product => product.id === productId);
 
     const updatedInventoryData = {
       ...inventoryData,
@@ -90,15 +100,28 @@ const ProductList = ({ products, userId }) => {
     setInventoryData(updatedInventoryData);
 
     const updatedProducts = { ...products };
+    const productToUpdate = updatedProducts[category].find(product => product.id === productId);
     if (productToUpdate) {
       const quantityNum = extractNumber(productToUpdate.quantity);
       productToUpdate.purchased = value >= quantityNum;
-    }
 
-    setSelectedProducts((prevState) => ({
-      ...prevState,
-      [productId]: productToUpdate.purchased,
-    }));
+      setSelectedProducts((prevState) => ({
+        ...prevState,
+        [productId]: productToUpdate.purchased,
+      }));
+
+      try {
+        await setDoc(doc(db, `inventoryData/${userId}`), updatedInventoryData, { merge: true });
+
+        await updateDoc(doc(db, `userProductData/${userId}`), {
+          products: updatedProducts
+        });
+
+        console.log("Inventory data successfully updated!");
+      } catch (error) {
+        console.error("Error updating inventory data: ", error);
+      }
+    }
   };
 
   const saveInventoryData = async () => {
