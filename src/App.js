@@ -9,6 +9,8 @@ import AddHouseholdData from './compoents/DB/addUserInfo';
 import DisplayHouseholdData from './compoents/product/DisplayHouseHoldData';
 import UserInfo from './compoents/user_info/UserInfo';
 import PurchasedProducts from './compoents/stock/PurchasedProducts';
+import AuthRoute from './compoents/Login/components/AuthRoute';
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -31,8 +33,12 @@ function App() {
           {/* path：/home　でProductコンポネントに飛ばす。 */}
           <Route path="/inventory"  element={<InventoryControlHoldData />} />
           <Route path="/home" element={<DisplayHouseholdData/>} />
-          <Route path="/" element={<Navigate to="/Login" />} />
-          <Route path="/Login" element={<Login_app />} />
+          <Route path="/" element={
+              <AuthRoute>
+                <Navigate to="/Login" />
+              </AuthRoute>
+            } />
+            <Route path="/Login" element={<Login_app />} />
           <Route path="/add" element={< AddHouseholdData/>} />
 
           <Route path="/user" element={< UserInfo/>} />
