@@ -4,11 +4,9 @@ import { db } from '../../firebase';
 import './RenderProductList.css';
 
 const ProductList = ({ products, userId }) => {
-  // 各商品の選択状態を管理するためのstateを追加
   const [selectedProducts, setSelectedProducts] = useState({});
 
   useEffect(() => {
-    // 初期状態として、全商品のpurchased状態を設定する
     const initialSelectedProducts = {};
     Object.keys(products).forEach(category => {
       products[category].forEach(product => {
@@ -18,7 +16,6 @@ const ProductList = ({ products, userId }) => {
     setSelectedProducts(initialSelectedProducts);
   }, [products]);
 
-  // 商品を選択または解除する関数
   const toggleProductSelection = async (productId, category) => {
     const newSelectedState = !selectedProducts[productId];
     setSelectedProducts((prevState) => ({
@@ -26,14 +23,12 @@ const ProductList = ({ products, userId }) => {
       [productId]: newSelectedState,
     }));
 
-    // productsのpurchased状態を更新
     const updatedProducts = { ...products };
     const productToUpdate = updatedProducts[category].find(product => product.id === productId);
     if (productToUpdate) {
       productToUpdate.purchased = newSelectedState;
     }
 
-    // データベースを更新
     try {
       await updateDoc(doc(db, `userProductData/${userId}`), {
         products: updatedProducts
@@ -44,11 +39,10 @@ const ProductList = ({ products, userId }) => {
     }
   };
 
-  // 各カテゴリの商品リストを表示する関数
-  const renderProductGrid = (productList, category) => {
+  const renderProductGrid = (sortedProductList, category) => {
     return (
       <div className="product-grid">
-        {productList.map((product) => (
+        {sortedProductList.map((product) => (
           <div
             className={`product-item ${selectedProducts[product.id] ? 'selected' : ''}`}
             key={product.id}
@@ -62,11 +56,7 @@ const ProductList = ({ products, userId }) => {
     );
   };
 
-  // 各カテゴリの詳細リストを表示する関数
-  const renderProductDetails = (productList, category) => {
-    // IDの昇順にソート
-    const sortedProductList = [...productList].sort((a, b) => a.id - b.id);
-
+  const renderProductDetails = (sortedProductList, category) => {
     return sortedProductList.map((product) => (
       <div id={`product-${product.id}`} key={product.id} className={`product-detail ${selectedProducts[product.id] ? 'selected' : ''}`}>
         <input
@@ -90,19 +80,20 @@ const ProductList = ({ products, userId }) => {
 
   return (
     <div className="product-list">
-      <h1>食品等</h1>
-      {products.food && renderProductGrid(products.food, 'food')}
+      <h1>食品類</h1>
+      {products.food && renderProductGrid([...products.food].sort((a, b) => a.id - b.id), 'food')}
 
       <h1>衛生用品</h1>
-      {products.hygiene && renderProductGrid(products.hygiene, 'hygiene')}
+      {products.hygiene && renderProductGrid([...products.hygiene].sort((a, b) => a.id - b.id), 'hygiene')}
 
       <h1>生活用品</h1>
-      {products.daily && renderProductGrid(products.daily, 'daily')}
+      {products.daily && renderProductGrid([...products.daily].sort((a, b) => a.id - b.id), 'daily')}
 
       <div className="product-details">
-        {Object.keys(products).map((category) =>
-          renderProductDetails(products[category], category)
-        )}
+        {['food', 'hygiene', 'daily'].map((category) => {
+          const sortedProductList = [...products[category]].sort((a, b) => a.id - b.id);
+          return renderProductDetails(sortedProductList, category);
+        })}
       </div>
     </div>
   );

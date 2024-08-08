@@ -86,21 +86,8 @@ const DisplayHouseholdData = () => {
 
   return (
     <div>
-      <h1>家族情報</h1>
-      {householdData ? (
-        <div>
-          {Object.keys(householdData).map((key) => (
-            <div key={key}>
-              <h3>{key}</h3>
-              <p>世代: {householdData[key].ageCategory}</p>
-              <p>性別: {householdData[key].gender}</p>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>ロード中...</p>
-      )}
-      <h2>必要な備蓄リスト</h2>
+      
+      <h1>必要な備蓄リスト</h1>
       {neededProducts ? (
         <ProductList products={neededProducts} userId={userId} />
       ) : (
