@@ -24,7 +24,7 @@ const Header = () => {
               <a href="/home" className={getActiveClass('/home')}>ホーム</a>
             </li>
             <li>
-              <a href="/inventory" className={getActiveClass('/inventory')}>在庫リスト</a>
+              <a href="/stock" className={getActiveClass('/stock')}>在庫リスト</a>
             </li>
             <li>
               <a href="/user" className={getActiveClass('/user')}>ユーザ情報</a>
