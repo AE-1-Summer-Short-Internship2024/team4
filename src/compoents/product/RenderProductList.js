@@ -9,19 +9,34 @@ const ProductList = ({ products, userId }) => {
 
   useEffect(() => {
     const initialSelectedProducts = {};
-    Object.keys(products).forEach(category => {
-      products[category].forEach(product => {
-        initialSelectedProducts[product.id] = product.purchased;
-      });
-    });
-    setSelectedProducts(initialSelectedProducts);
+    const updatedProducts = { ...products };
 
     const fetchInventoryData = async () => {
       try {
         const docSnap = await getDoc(doc(db, `inventoryData/${userId}`));
         if (docSnap.exists()) {
-          setInventoryData(docSnap.data());
+          const inventory = docSnap.data();
+          setInventoryData(inventory);
+
+          Object.keys(products).forEach(category => {
+            products[category].forEach(product => {
+              if (!inventory[product.id] || inventory[product.id].quantity <= 0 || inventory[product.id].quantity == null) {
+                product.purchased = false;
+              }
+              initialSelectedProducts[product.id] = product.purchased;
+            });
+          });
+        } else {
+          Object.keys(products).forEach(category => {
+            products[category].forEach(product => {
+              product.purchased = false;
+              initialSelectedProducts[product.id] = product.purchased;
+            });
+          });
         }
+
+        setSelectedProducts(initialSelectedProducts);
+
       } catch (error) {
         console.error("Error fetching inventory data: ", error);
       }
@@ -61,13 +76,19 @@ const ProductList = ({ products, userId }) => {
   const handleInventoryChange = (productId, category, value) => {
     if (value < 0) return;
 
-    const updatedInventoryData = { ...inventoryData, [productId]: value };
+    const productToUpdate = products[category].find(product => product.id === productId);
+
+    const updatedInventoryData = {
+      ...inventoryData,
+      [productId]: {
+        quantity: value,
+      }
+    };
     setInventoryData(updatedInventoryData);
 
     const updatedProducts = { ...products };
     if (productToUpdate) {
       const quantityNum = extractNumber(productToUpdate.quantity);
-      // 同数の場合でもチェックボックスが外れないようにする
       productToUpdate.purchased = value >= quantityNum;
     }
 
@@ -95,8 +116,7 @@ const ProductList = ({ products, userId }) => {
           }
         });
       });
-
-      // データベースに quantity、name、expirationDate を含む在庫データを保存
+      
       await setDoc(doc(db, `inventoryData/${userId}`), updatedInventoryData);
 
       await updateDoc(doc(db, `userProductData/${userId}`), {
