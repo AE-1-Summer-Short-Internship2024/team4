@@ -73,10 +73,10 @@ const AddHouseholdData = () => {
       return;
     }
 
-    if (!userId) {
-      alert("ログインしてください。");
-      return;
-    }
+    // if (!userId) {
+    //   alert("ログインしてください。");
+    //   return;
+    // }
 
     try {
       const householdObject = householdData.reduce((acc, data, index) => {
