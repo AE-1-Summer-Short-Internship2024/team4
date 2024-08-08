@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { signInWithPopup, signOut } from "firebase/auth";
 import { auth, googleProvider } from "../../../firebase";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import './AuthComponent.css'; 
 
 const db = getFirestore();
 
@@ -12,7 +13,7 @@ const AuthComponent = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
-        // ログインしている場合f
+        // ログインしている場合
         setUser(authUser);
       } else {
         // ログアウトしている場合
@@ -49,13 +50,13 @@ const AuthComponent = () => {
         } else {
           // householdフィールドが存在しない場合
           console.log('既存ユーザー (household情報なし)', user.email);
-          window.location.href = '/add';
+          window.location.href = '/user';
         }
       } else {
         // ドキュメントが存在しない場合（新規ユーザー）
         console.log('新規ユーザー', user.email);
         await setDoc(userDocRef, { email: user.email });
-        window.location.href = '/add';
+        window.location.href = '/user';
       }
 
     } catch (error) {
@@ -75,18 +76,15 @@ const AuthComponent = () => {
   };
 
   return (
-    <div>
+    <div className="auth-container">
       {user ? (
-        <div>
-          <p>ログインユーザー: {user.displayName}</p>
-          <button onClick={handleSignOut}>ログアウト</button>
-        </div>
+        <p className="auth-message"> {user.displayName}さん、こんにちは！</p>
       ) : (
-        <div>
-          <p>ログインしていません</p>
-          <button onClick={handleSignIn}>ログイン</button>
-        </div>
+        <p className="auth-message">ログインしていません</p>
       )}
+      <button className="auth-button" onClick={handleSignIn}>
+        ログイン
+      </button>
     </div>
   );
 };
