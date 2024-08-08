@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db, auth } from '../../firebase';
 import { onAuthStateChanged } from "firebase/auth";
-import { calculateNeeds } from './utils/calculateNeeds';
-import ProductList from './RenderProductList';
+import { calculateNeeds } from '../product/utils/calculateNeeds';
+import InventoryControl from '../InventoryControl/InventoryControl';
 
 const DisplayHouseholdData = () => {
   const [userId, setUserId] = useState(null);
   const [householdData, setHouseholdData] = useState(null);
   const [error, setError] = useState('');
   const [neededProducts, setNeededProducts] = useState(null);
-　//ユーザを認証する
+
+  　//ユーザを認証する
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -22,6 +23,7 @@ const DisplayHouseholdData = () => {
 
     return () => unsubscribe();
   }, []);
+
   //必要な商品情報をDBに保存する関数
   const saveProductsToDB = async (userId, products) => {
     try {
@@ -86,10 +88,9 @@ const DisplayHouseholdData = () => {
 
   return (
     <div>
-      
-      <h1>必要な備蓄リスト</h1>
+      <h1>備蓄リスト</h1>
       {neededProducts ? (
-        <ProductList products={neededProducts} userId={userId} />
+        <InventoryControl products={neededProducts} userId={userId} />
       ) : (
         <p>ロード中...</p>
       )}

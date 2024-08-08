@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { signInWithPopup, signOut } from "firebase/auth";
 import { auth, googleProvider } from "../../../firebase";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import './AuthComponent.css'; 
 
 const db = getFirestore();
 
@@ -12,7 +13,7 @@ const AuthComponent = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
-        // ログインしている場合f
+        // ログインしている場合
         setUser(authUser);
       } else {
         // ログアウトしている場合
@@ -75,18 +76,15 @@ const AuthComponent = () => {
   };
 
   return (
-    <div>
+    <div className="auth-container">
       {user ? (
-        <div>
-          <p>ログインユーザー: {user.displayName}</p>
-          <button onClick={handleSignOut}>ログアウト</button>
-        </div>
+        <p className="auth-message"> {user.displayName}さん、こんにちは！</p>
       ) : (
-        <div>
-          <p>ログインしていません</p>
-          <button onClick={handleSignIn}>ログイン</button>
-        </div>
+        <p className="auth-message">ログインしていません</p>
       )}
+      <button className="auth-button" onClick={handleSignIn}>
+        ログイン
+      </button>
     </div>
   );
 };

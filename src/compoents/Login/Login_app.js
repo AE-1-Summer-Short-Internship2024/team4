@@ -1,16 +1,14 @@
 import React from 'react';
 import AuthComponent from './components/AuthComponent'; // AuthComponentをインポート
+import './Login_app.css'; // CSSファイルをインポート
 
-
-const App = () => {
+const LoginApp = () => {
   return (
-    <div>
-      <h1>ログイン機能</h1>
+    <div className="login-container">
+      <h1 className="login-title">ログイン画面</h1>
       <AuthComponent />
-
-
     </div>
   );
 };
 
-export default App;
+export default LoginApp;

@@ -1,10 +1,9 @@
-// src/components/FamilyInfo.js
-
 import React, { useState, useEffect } from 'react';
 import { doc, getDoc } from "firebase/firestore";
 import { db, auth } from '../../firebase';
 import { onAuthStateChanged } from "firebase/auth";
-import './UserInfo.css'; // CSSファイルをインポート
+import { useNavigate } from "react-router-dom";
+import './UserInfo.css';
 
 const ageCategoryMap = {
   Infant: '乳幼児 0~2歳',
@@ -42,12 +41,12 @@ const imageMap = {
   }
 };
 
-
 const UserInfo = () => {
   const [userId, setUserId] = useState(null);
   const [householdData, setHouseholdData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // useNavigateフックを追加
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -116,9 +115,9 @@ const UserInfo = () => {
       ) : (
         <p>No household data available</p>
       )}
+      <button onClick={() => navigate('/Login')}>ログイン設定</button> {/* リダイレクトボタンを追加 */}
     </div>
   );
 };
-
 
 export default UserInfo;
