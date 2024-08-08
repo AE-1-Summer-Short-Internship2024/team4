@@ -9,19 +9,34 @@ const ProductList = ({ products, userId }) => {
 
   useEffect(() => {
     const initialSelectedProducts = {};
-    Object.keys(products).forEach(category => {
-      products[category].forEach(product => {
-        initialSelectedProducts[product.id] = product.purchased;
-      });
-    });
-    setSelectedProducts(initialSelectedProducts);
+    const updatedProducts = { ...products };
 
     const fetchInventoryData = async () => {
       try {
         const docSnap = await getDoc(doc(db, `inventoryData/${userId}`));
         if (docSnap.exists()) {
-          setInventoryData(docSnap.data());
+          const inventory = docSnap.data();
+          setInventoryData(inventory);
+
+          Object.keys(products).forEach(category => {
+            products[category].forEach(product => {
+              if (!inventory[product.id] || inventory[product.id].quantity <= 0 || inventory[product.id].quantity == null) {
+                product.purchased = false;
+              }
+              initialSelectedProducts[product.id] = product.purchased;
+            });
+          });
+        } else {
+          Object.keys(products).forEach(category => {
+            products[category].forEach(product => {
+              product.purchased = false;
+              initialSelectedProducts[product.id] = product.purchased;
+            });
+          });
         }
+
+        setSelectedProducts(initialSelectedProducts);
+
       } catch (error) {
         console.error("Error fetching inventory data: ", error);
       }
@@ -61,15 +76,20 @@ const ProductList = ({ products, userId }) => {
   const handleInventoryChange = (productId, category, value) => {
     if (value < 0) return;
 
-    const updatedInventoryData = { ...inventoryData, [productId]: value };
+    const productToUpdate = products[category].find(product => product.id === productId);
+
+    const updatedInventoryData = {
+      ...inventoryData,
+      [productId]: {
+        quantity: value,
+      }
+    };
     setInventoryData(updatedInventoryData);
 
     const updatedProducts = { ...products };
-    const productToUpdate = updatedProducts[category].find(product => product.id === productId);
-
     if (productToUpdate) {
       const quantityNum = extractNumber(productToUpdate.quantity);
-      productToUpdate.purchased = value > quantityNum;
+      productToUpdate.purchased = value >= quantityNum;
     }
 
     setSelectedProducts((prevState) => ({
@@ -83,20 +103,20 @@ const ProductList = ({ products, userId }) => {
       const updatedInventoryData = { ...inventoryData };
       const updatedProducts = { ...products };
 
-      Object.keys(inventoryData).forEach(productId => {
+      Object.keys(updatedInventoryData).forEach(productId => {
         Object.keys(updatedProducts).forEach(category => {
           const productToUpdate = updatedProducts[category].find(product => product.id === productId);
           if (productToUpdate) {
             const quantityNum = extractNumber(productToUpdate.quantity);
-            productToUpdate.purchased = (inventoryData[productId] > quantityNum - 1);
+            productToUpdate.purchased = (updatedInventoryData[productId].quantity >= quantityNum);
 
-            if (inventoryData[productId] < quantityNum) {
+            if (updatedInventoryData[productId].quantity < quantityNum) {
               delete updatedInventoryData[productId];
             }
           }
         });
       });
-
+      
       await setDoc(doc(db, `inventoryData/${userId}`), updatedInventoryData);
 
       await updateDoc(doc(db, `userProductData/${userId}`), {
@@ -149,7 +169,7 @@ const ProductList = ({ products, userId }) => {
         <p>消費期限: {product.expirationDate}</p>
         <input
           type="number"
-          value={inventoryData[product.id] || ''}
+          value={inventoryData[product.id]?.quantity || ''}
           onChange={(e) => handleInventoryChange(product.id, category, parseInt(e.target.value, 10))}
           placeholder="在庫数を入力"
           min="0"
