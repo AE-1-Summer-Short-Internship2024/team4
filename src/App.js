@@ -40,7 +40,6 @@ function App() {
             } />
             <Route path="/Login" element={<Login_app />} />
           <Route path="/add" element={< AddHouseholdData/>} />
-
           <Route path="/user" element={< UserInfo/>} />
           <Route path="/stock" element={< PurchasedProducts/>} />
 
