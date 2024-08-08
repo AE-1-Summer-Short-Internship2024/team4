@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { doc, updateDoc, getDoc, setDoc } from "firebase/firestore";
 import { db } from '../../firebase';
+import Checkbox from '@mui/material/Checkbox';
 import './RenderProductList.css';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Link from '@mui/material/Link';
 
 const ProductList = ({ products, userId }) => {
   const [selectedProducts, setSelectedProducts] = useState({});
@@ -139,11 +142,15 @@ const ProductList = ({ products, userId }) => {
 
     return sortedProductList.map((product) => (
       <div id={`product-${product.id}`} key={product.id} className={`product-detail ${selectedProducts[product.id] ? 'selected' : ''}`}>
-        <input
-          type="checkbox"
+        <FormControlLabel
           checked={!!selectedProducts[product.id]}
           onChange={() => toggleProductSelection(product.id, category)}
+          control={<Checkbox />}
+          label="購入済み"
+          labelPlacement="end"
         />
+      
+        
         <h2>{product.name}</h2>
         <p>量: {product.quantity}</p>
         <p>消費期限: {product.expirationDate}</p>
@@ -155,7 +162,7 @@ const ProductList = ({ products, userId }) => {
           min="0"
         />
         <p>
-          詳細情報を<a href={product.url} target="_blank" rel="noopener noreferrer">楽天市場</a>で確認する。
+          詳細情報を<Link href={product.url} underline="hover" target="_blank" rel="noopener noreferrer">楽天市場</Link>で確認する。
         </p>
       </div>
     ));
