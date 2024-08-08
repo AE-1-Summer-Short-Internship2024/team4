@@ -1,7 +1,7 @@
 // frontend/src/App.js
 import React, { useEffect, useState } from 'react';
 import Header from './Header/Header';
-import InventoryControl from './compoents/InventoryControl/InventoryControl';
+import InventoryControlHoldData from './compoents/InventoryControl/InventoryControlHoldData';
 import UserRegist from './compoents/main/UserRegist';
 import ProductList from './compoents/product/RenderProductList';
 import Login_app from './compoents/Login/Login_app';
@@ -27,7 +27,7 @@ function App() {
       <div className="app-content">
         <Routes>
           {/* path：/home　でProductコンポネントに飛ばす。 */}
-          <Route path="/inventory"  element={<InventoryControl />} />
+          <Route path="/inventory"  element={<InventoryControlHoldData />} />
           <Route path="/home" element={<DisplayHouseholdData/>} />
           <Route path="/" element={<Navigate to="/Login" />} />
           <Route path="/Login" element={<Login_app />} />
