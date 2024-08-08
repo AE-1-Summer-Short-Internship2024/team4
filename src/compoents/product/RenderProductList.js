@@ -80,7 +80,7 @@ const ProductList = ({ products, userId }) => {
 
   return (
     <div className="product-list">
-      <h1>食品類</h1>
+      <h1>食品等</h1>
       {products.food && renderProductGrid([...products.food].sort((a, b) => a.id - b.id), 'food')}
 
       <h1>衛生用品</h1>
