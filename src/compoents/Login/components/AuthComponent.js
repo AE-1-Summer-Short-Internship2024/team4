@@ -67,24 +67,34 @@ const AuthComponent = () => {
 
   // ログアウト
   const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      window.location.href = '/'; // ログアウト時に / にリダイレクト（必要なら）
-    } catch (error) {
-      console.error('ログアウトエラー:', error);
+    const confirmLogout = window.confirm("本当にログアウトしますか？");
+    if (confirmLogout) {
+      try {
+        await signOut(auth);
+        window.location.href = '/'; // ログアウト時に / にリダイレクト（必要なら）
+      } catch (error) {
+        console.error('ログアウトエラー:', error);
+      }
     }
   };
 
   return (
     <div className="auth-container">
       {user ? (
-        <p className="auth-message"> {user.displayName}さん、こんにちは！</p>
+        <>
+          <p className="auth-message">{user.displayName}さん、こんにちは！</p>
+          <button className="auth-button" onClick={handleSignOut}>
+            ログアウト
+          </button>
+        </>
       ) : (
-        <p className="auth-message">ログインしていません</p>
+        <>
+          <p className="auth-message">ログインしていません</p>
+          <button className="auth-button" onClick={handleSignIn}>
+            ログイン
+          </button>
+        </>
       )}
-      <button className="auth-button" onClick={handleSignIn}>
-        ログイン
-      </button>
     </div>
   );
 };
