@@ -87,3 +87,7 @@ body {
     padding: 5px 0;
   }
   
+  .title-link:hover {
+    text-decoration: underline;
+    cursor: pointer; /* カーソルを指マークにする */
+  }
