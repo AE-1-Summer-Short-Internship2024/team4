@@ -3,11 +3,13 @@ import React, { useEffect, useState } from 'react';
 import Header from './Header/Header';
 import InventoryControlHoldData from './compoents/InventoryControl/InventoryControlHoldData';
 import UserRegist from './compoents/main/UserRegist';
+import InventoryControl from './compoents/InventoryControl/InventoryControl';
 import ProductList from './compoents/product/RenderProductList';
 import Login_app from './compoents/Login/Login_app';
 import AddHouseholdData from './compoents/DB/addUserInfo';
 import DisplayHouseholdData from './compoents/product/DisplayHouseHoldData';
 import UserInfo from './compoents/user_info/UserInfo';
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -32,7 +34,7 @@ function App() {
           <Route path="/" element={<Navigate to="/Login" />} />
           <Route path="/Login" element={<Login_app />} />
           <Route path="/add" element={< AddHouseholdData/>} />
-          <Route path="/userregist" element={<UserRegist />} />
+
           <Route path="/user" element={< UserInfo/>} />
 
         </Routes>
