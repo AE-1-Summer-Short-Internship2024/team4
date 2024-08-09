@@ -128,6 +128,16 @@ const ProductList = ({ products, userId }) => {
     }
   };
 
+  const incrementInventory = (productId, category) => {
+    const currentQuantity = inventoryData[productId]?.quantity || 0;
+    handleInventoryChange(productId, category, currentQuantity + 1);
+  };
+
+  const decrementInventory = (productId, category) => {
+    const currentQuantity = inventoryData[productId]?.quantity || 0;
+    handleInventoryChange(productId, category, Math.max(0, currentQuantity - 1));
+  };
+
   const saveInventoryData = async () => {
     try {
       const updatedInventoryData = { ...inventoryData };
@@ -196,18 +206,28 @@ const ProductList = ({ products, userId }) => {
           label="購入済み"
           labelPlacement="end"
         />
-      
-        
         <h2>{product.name}</h2>
         <p>量: {product.quantity}</p>
         <p>消費期限: {product.expirationDate}</p>
-        <input
-          type="number"
-          value={inventoryData[product.id]?.quantity || ''}
-          onChange={(e) => handleInventoryChange(product.id, category, parseInt(e.target.value, 10))}
-          placeholder="在庫数を入力"
-          min="0"
-        />
+        <div className="inventory-control">
+          <span className="inventory-control-label">在庫数:</span>
+          <button
+            className="quantity-btn"
+            onClick={() => decrementInventory(product.id, category)}
+          >-</button>
+          <input
+            type="number"
+            value={inventoryData[product.id]?.quantity || ''}
+            onChange={(e) => handleInventoryChange(product.id, category, parseInt(e.target.value, 10))}
+            placeholder="在庫数"
+            min="0"
+          />
+          <button
+            className="quantity-btn"
+            onClick={() => incrementInventory(product.id, category)}
+          >+</button>
+        </div>
+
         <p>
           詳細情報を<Link href={product.url} underline="hover" target="_blank" rel="noopener noreferrer">楽天市場</Link>で確認する。
         </p>
