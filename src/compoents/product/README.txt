@@ -5,4 +5,4 @@ calculateNeeds→ユーザの家族の情報を使って、備蓄に必要な量
 流れ
 ユーザの家族の情報を受け取る。(DisplayHouseholdData.js)
 受け取ったユーザの家族の情報（性別、年齢）などから、必要な備蓄量を計算する（calcucalteNeeds.js)
-計算した備蓄量をexportして、ProductList.jsで表示する。(DisplayHouseholdData.jsが渡す)
+計算した備蓄量をexportして、RenderProductList.jsで表示する。(DisplayHouseholdData.jsが渡す)

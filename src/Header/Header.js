@@ -55,6 +55,6 @@ const App = () => {
 const Home = () => <div></div>;
 const Inventory = () => <div></div>;
 const Userregist = () => <div></div>;
-const Login = () => <div>ログインページ</div>;
+const Login = () => <div></div>;
 
 export default App;

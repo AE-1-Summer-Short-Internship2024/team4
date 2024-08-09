@@ -53,7 +53,7 @@ const PurchasedProducts = () => {
               });
             });
 
-            purchasedProducts.sort((a, b) => new Date(a.expirationDate) - new Date(b.expirationDate));
+            purchasedProducts.sort((a, b) => a.id - b.id);
 
             setProducts(purchasedProducts);
             setInventoryData(inventoryData);
@@ -177,16 +177,23 @@ const PurchasedProducts = () => {
           {products.map(product => (
             <div key={product.id} className="product-item">
               <h3>{product.name}</h3>
-              <label>
-                在庫数:
+              <div className="inventory-control">
+                <button
+                  className="quantity-btn"
+                  onClick={() => handleUpdateInventoryQuantity(product.id, Math.max(0, (inventoryData[product.id]?.quantity || 0) - 1))}
+                >-</button>
                 <input
                   type="number"
                   min="0"
                   value={inventoryData[product.id]?.quantity || 0}
                   onChange={(e) => handleUpdateInventoryQuantity(product.id, parseInt(e.target.value, 10))}
                 />
+                <button
+                  className="quantity-btn"
+                  onClick={() => handleUpdateInventoryQuantity(product.id, (inventoryData[product.id]?.quantity || 0) + 1)}
+                >+</button>
                 <p> / {product.quantity}</p>
-              </label>
+              </div>
               {product.expirationDate && (
                 <label>
                   消費期限:
@@ -203,7 +210,6 @@ const PurchasedProducts = () => {
       ) : (
         <p>No purchased products available</p>
       )}
-      <button onClick={saveInventoryData}>在庫データを保存</button>
     </div>
   );
 };
